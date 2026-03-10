@@ -66,13 +66,26 @@
     const frase = "Il pensiero di una persona può cambiare leggendo informazioni su internet. La natura del cambiamento solitamente è racchiusa dal passare a non avere un’opinione ad averne una sbagliata.";
     const display = document.getElementById('text-box');
     let index = 0;
+
     function typeWriter() {
         if (index < frase.length) {
             display.innerHTML += frase.charAt(index);
             index++;
-            setTimeout(typeWriter, 30);
+            // Velocità variabile: tra 30ms e 80ms per carattere (effetto più naturale)
+            setTimeout(typeWriter, Math.random() * 50 + 30);
+        } else {
+            // Pausa di 10 secondi quando ha finito di scrivere, poi resetta
+            setTimeout(resetAnimation, 10000);
         }
     }
+
+    function resetAnimation() {
+        display.innerHTML = "";
+        index = 0;
+        typeWriter();
+    }
+
+    // Avvio automatico
     window.onload = typeWriter;
 </script>
 
