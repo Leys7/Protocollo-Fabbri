@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocollo Fabbri | Caso 01</title>
+    <style>
+        /* TEMA GENERALE RESPONSIVE */
+        :root {
+            --poste-blue: #003366;
+            --poste-yellow: #ffcc00;
+            --terminal-green: #00ff41;
+            --dark-bg: #0a0a0b;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: var(--dark-bg); 
+            color: #ccc; 
+            margin: 0; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .narrativa {
+            max-width: 800px;
+            width: 100%;
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+
+        .enigma-box {
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        /* STILE EMAIL (CODICE 1) */
+        .container-mail { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border-top: 10px solid var(--poste-yellow); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            color: #333;
+        }
+        
+        .email-header { background: #f8f9fa; padding: 10px; border: 1px solid #ddd; font-size: 0.85rem; margin-bottom: 10px; }
+        .email-body { padding: 20px; border: 1px solid #ddd; line-height: 1.6; background: #fff; font-size: 0.95rem; }
+
+        .bit { 
+            display: inline; padding: 2px 4px; cursor: pointer; border-radius: 3px; 
+            transition: 0.2s; border-bottom: 1px dashed #ccc;
+        }
+        .bit:hover { background: #fff9c4; }
+        .selected { background: #ffff00 !important; color: #000 !important; border-bottom: 2px solid #333 !important; }
+        .is-correct { background: #d4edda !important; border: 2px solid #28a745 !important; color: #155724 !important; }
+
+        .btn-verify { 
+            background: var(--poste-blue); color: white; border: none; 
+            padding: 15px; font-weight: bold; cursor: pointer; 
+            border-radius: 5px; text-transform: uppercase; width: 100%; margin-top: 15px;
+        }
+        .btn-reset {
+            background: #eee; color: #666; border: 1px solid #ccc;
+            padding: 8px; cursor: pointer; border-radius: 5px;
+            text-transform: uppercase; width: 100%; margin-top: 10px; font-size: 0.75rem;
+        }
+        #final-msg { display: none; margin-top: 15px; padding: 15px; border-radius: 5px; font-weight: bold; text-align: center; }
+
+        /* STILE CRIPTAZIONE (CODICE 2) */
+        .box-crypto { 
+            background: #16161a; color: var(--terminal-green); 
+            font-family: 'Courier New', monospace; padding: 25px; 
+            border-radius: 10px; border: 2px solid #333; width: 100%;
+            box-sizing: border-box; margin-top: 40px;
+        }
+        .box-crypto input { 
+            background: #000; border: 1px solid var(--terminal-green); color: var(--terminal-green); 
+            padding: 12px; width: 90%; text-align: center; margin: 15px 0; font-size: 18px;
+            text-transform: uppercase; outline: none;
+        }
+        .box-crypto button { 
+            background: var(--terminal-green); color: #000; border: none; padding: 12px; 
+            font-weight: bold; cursor: pointer; width: 95%; text-transform: uppercase;
+        }
+        #link-area { display: none; margin-top: 20px; border-top: 2px solid var(--terminal-green); padding-top: 20px; }
+        #lock-msg { color: #ff1744; font-weight: bold; display: none; margin-top: 10px; }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .email-body { padding: 10px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="narrativa">
+        Le lancette dell'orologio nell'atrio della scuola sembrano essersi fermate, ma i log del server non mentono: il breach è avvenuto nel cuore della notte, poco dopo le 23:00. Un'ora in cui il silenzio dovrebbe essere assoluto, eppure qualcuno era sveglio, nell'ombra, a digitare freneticamente.<br><br>
+        Ti trovi davanti al terminale dell'amministratore. Luca Fabbri è il principale sospettato, ma qualcosa non torna. Mentre scorri la posta in arrivo, intercetti il vettore dell'attacco: una mail che puzza di inganno lontano un miglio. Chi l'ha scritta sapeva esattamente quali tasti toccare per scatenare il panico tra i banchi della segreteria. Se vuoi scagionare quel ragazzo, o forse incastrarlo definitivamente, devi guardare oltre il testo. C'è un'anomalia nascosta in questi caratteri, un dettaglio che il colpevole ha trascurato nella fretta di colpire.
+    </div>
+
+    <div class="enigma-box">
+        <h2 style="color: var(--terminal-green);">L'Enigma:</h2>
+        <ul>
+            <li>Esamina il messaggio ricevuto dall'amministrazione. Non lasciarti condizionare dal tono autoritario o dalle minacce di blocchi finanziari. Il vero colpevole ha lasciato un’impronta digitale nel mittente o nel link. Trova l'elemento sospetto per ottenere la password e passare al livello successivo.</li>
+        </ul>
+    </div>
+
+    <div class="enigma-box">
+        <div class="container-mail">
+            <h3 style="color:var(--poste-blue); margin-top:0;">CASO 01: Analisi Vettore Mail</h3>
+            <div class="email-header">
+                <strong>Da:</strong> <span class="bit" data-target="true">Poste.it - Servizio Istituti (notifiche@poste-scuole-gov.net)</span><br>
+                <strong>Oggetto:</strong> <span class="bit" data-target="true">AVVISO CRITICO: Blocco Conto Business Scuole</span>
+            </div>
+            <div class="email-body">
+                <span class="bit" data-target="true">Gentile Amministratore,</span><br><br>
+                <span class="bit">il sistema ha rilevato un accesso
+<span class="bit">sul conto dell'Istituto Scolastico.</span><br><br>
+                <span class="bit" data-target="true">Abbiamo sospeso i pagamenti per le gite scolastiche.</span> 
+                <span class="bit">Per sbloccare il fondo,</span> 
+                <span class="bit" data-target="true">è obbligatorio convalidare le credenziali</span> 
+                <span class="bit" data-target="true">entro 2 ore da questa notifica,</span> 
+                <span class="bit">pena la perdita definitiva dei dati.</span><br><br>
+                <div style="text-align:center;">
+                    <span class="bit" data-target="true" style="color:blue; text-decoration:underline;">https://bit.ly/poste-business-scuola-verify</span>
+                </div>
+                <br>
+                <span class="bit">Cordiali Saluti,</span><br>
+                <span class="bit" data-target="true">PosteItaliane - Reparto Sicurezza Gov</span>
+            </div>
+            <div class="footer-controls">
+                <button id="verifyButton" class="btn-verify" onclick="checkResults()">Verifica Analisi Forense</button>
+                <button id="resetButton" class="btn-reset" onclick="resetAnalisi()">Azzera Selezione</button>
+                <div id="final-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="enigma-box">
+        <div class="box-crypto">
+            <h3 id="titolo">SISTEMA DI CRIPTAZIONE LIVELLO 2</h3>
+            <p id="info-testo" style="font-size: 12px; color: #888;">Tentativi rimasti: <span id="tentativi">3</span></p>
+            <input type="text" id="passInput" placeholder="INSERIRE CODICE...">
+            <br>
+            <button id="checkBtn">VERIFICA AUTORIZZAZIONE</button>
+            <div id="lock-msg">SISTEMA BLOCCATO PER SOSPETTO ATTACCO HACKER.<br>RIPROVA TRA <span id="timer">30</span> SECONDI.</div>
+            <div id="link-area">
+                <p style="color: var(--terminal-green); font-weight: bold; font-size: 18px;">ACCESSO AUTORIZZATO</p>
+                <a href="https://sites.google.com/cnos-fap.it/sicurezza-digitale/2524-2" target="_blank" style="color: #000; background: var(--terminal-green); text-decoration: none; padding: 15px; display: block; font-weight: bold; text-align:center; border-radius:5px;">PROSEGUI ALLA FASE 2 →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LOGICA CODICE 1 (MAIL)
+        const elements = document.querySelectorAll('.bit');
+        elements.forEach(el => {
+            el.onclick = function() {
+                if(document.body.classList.contains('locked-mail')) return;
+                this.classList.toggle('selected');
+            };
+        });
+
+        function resetAnalisi() {
+            if(document.body.classList.contains('locked-mail')) return;
+            elements.forEach(el => el.classList.remove('selected'));
+            document.getElementById('final-msg').style.display = "none";
+        }
+
+        function checkResults() {
+            let score_ok = 0;
+            let score_no = 0;
+            elements.forEach(el => {
+                if (el.classList.contains('selected')) {
+                    if (el.getAttribute('data-target') === 'true') score_ok++;
+                    else score_no++;
+                }
+            });
+            const total = score_ok - score_no;
+            const msg = document.getElementById('final-msg');
+            if (total >= 6) {
+                document.body.classList.add('locked-mail');
+                document.getElementById('verifyButton').style.display = "none";
+                document.getElementById('resetButton').style.display = "none";
+                msg.style.display = "block";
+                msg.style.background = "#d4edda";
+                msg.style.color = "#155724";
+                msg.innerHTML = "ANALISI VALIDA! Punteggio Netto: " + total + "<br>CODICE ACCESSO: SILENZIO-1991";
+                elements.forEach(el => {
+                    if(el.classList.contains('selected') && el.getAttribute('data-target') === 'true') el.classList.add('is-correct');
+                });
+            } else {
+                msg.style.display = "block";
+                msg.style.background = "#f8d7da";
+                msg.style.color = "#721c24";
+                msg.innerHTML = "ANALISI INSUFFICIENTE (Punti: " + total + ")<br>Riprova individuando le minacce reali.";
+            }
+        }
+
+        // LOGICA CODICE 2 (CRYPTO)
+        let tentativi = 3;
+        let lockTime = 30;
+        const secret = "SILENZIO-1991";
+
+        document.getElementById('checkBtn').onclick = function() {
+            const p = document.getElementById('passInput').value.toUpperCase().trim();
+            const area = document.getElementById('link-area');
+            const btn = document.getElementById('checkBtn');
+            const input = document.getElementById('passInput');
+            if (p === secret) {
+                area.style.display = "block";
+                btn.style.display = "none";
+                input.disabled = true;
+                document.getElementById('info-testo').style.display = "none";
+            } else {
+                tentativi--;
+                document.getElementById('tentativi').innerText = tentativi;
+                if (tentativi <= 0) {
+                    input.disabled = true; btn.disabled = true;
+                    document.getElementById('lock-msg').style.display = "block";
+                    let countdown = setInterval(() => {
+                        lockTime--;
+                        document.getElementById('timer').innerText = lockTime;
+                        if (lockTime <= 0) {
+                            clearInterval(countdown);
+                            tentativi = 3; lockTime = 30;
+                            document.getElementById('tentativi').innerText = tentativi;
+                            input.disabled = false; btn.disabled = false;
+                            document.getElementById('lock-msg').style.display = "none";
+                        }
+                    }, 1000);
+                } else { alert("ERRORE: Credenziali non valide."); }
+            }
+        };
+    </script>
+</body>
+</html>
