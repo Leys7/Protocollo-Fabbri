@@ -159,14 +159,24 @@
     </div>
 
     <script>
-        // LOGICA CODICE 1 (MAIL)
-        const elements = document.querySelectorAll('.bit');
-        elements.forEach(el => {
-            el.onclick = function() {
-                if(document.body.classList.contains('locked-mail')) return;
-                this.classList.toggle('selected');
-            };
+       // Seleziona tutti i pezzi di testo cliccabili
+    const elements = document.querySelectorAll('.bit');
+
+    elements.forEach(el => {
+        // Usiamo mousedown invece di onclick per una risposta più rapida
+        el.addEventListener('mousedown', function(e) {
+            // Impedisce al browser di selezionare il testo (evita il blocco blu)
+            e.preventDefault(); 
+            
+            if(document.body.classList.contains('locked-mail')) return;
+            
+            // Attiva/disattiva la selezione della singola frase
+            this.classList.toggle('selected');
         });
+    });
+
+    // ... resto del codice (resetAnalisi e checkResults) ...
+
 
         function resetAnalisi() {
             if(document.body.classList.contains('locked-mail')) return;
