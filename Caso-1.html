@@ -40,7 +40,7 @@
             margin-bottom: 40px;
         }
 
-        /* STILE EMAIL (CODICE 1) */
+        /* STILE EMAIL */
         .container-mail { 
             background: white; 
             padding: 20px; 
@@ -54,8 +54,14 @@
         .email-body { padding: 20px; border: 1px solid #ddd; line-height: 1.6; background: #fff; font-size: 0.95rem; }
 
         .bit { 
-            display: inline; padding: 2px 4px; cursor: pointer; border-radius: 3px; 
-            transition: 0.2s; border-bottom: 1px dashed #ccc;
+            display: inline-block; /* Cambiato da inline a inline-block per miglior clic */
+            padding: 2px 4px; 
+            cursor: pointer; 
+            border-radius: 3px; 
+            transition: 0.2s; 
+            border-bottom: 1px dashed #ccc;
+            user-select: none; /* IMPEDISCE SELEZIONE BLU */
+            -webkit-user-select: none;
         }
         .bit:hover { background: #fff9c4; }
         .selected { background: #ffff00 !important; color: #000 !important; border-bottom: 2px solid #333 !important; }
@@ -73,7 +79,7 @@
         }
         #final-msg { display: none; margin-top: 15px; padding: 15px; border-radius: 5px; font-weight: bold; text-align: center; }
 
-        /* STILE CRIPTAZIONE (CODICE 2) */
+        /* STILE CRIPTAZIONE */
         .box-crypto { 
             background: #16161a; color: var(--terminal-green); 
             font-family: 'Courier New', monospace; padding: 25px; 
@@ -121,13 +127,16 @@
             </div>
             <div class="email-body">
                 <span class="bit" data-target="true">Gentile Amministratore,</span><br><br>
-                <span class="bit">il sistema ha rilevato un accesso
-<span class="bit">sul conto dell'Istituto Scolastico.</span><br><br>
+                
+                <span class="bit">il sistema ha rilevato un accesso non autorizzato</span>
+                <span class="bit">sul conto dell'Istituto Scolastico.</span><br><br>
+                
                 <span class="bit" data-target="true">Abbiamo sospeso i pagamenti per le gite scolastiche.</span> 
                 <span class="bit">Per sbloccare il fondo,</span> 
                 <span class="bit" data-target="true">è obbligatorio convalidare le credenziali</span> 
                 <span class="bit" data-target="true">entro 2 ore da questa notifica,</span> 
                 <span class="bit">pena la perdita definitiva dei dati.</span><br><br>
+                
                 <div style="text-align:center;">
                     <span class="bit" data-target="true" style="color:blue; text-decoration:underline;">https://bit.ly/poste-business-scuola-verify</span>
                 </div>
@@ -159,24 +168,15 @@
     </div>
 
     <script>
-       // Seleziona tutti i pezzi di testo cliccabili
-    const elements = document.querySelectorAll('.bit');
+        const elements = document.querySelectorAll('.bit');
 
-    elements.forEach(el => {
-        // Usiamo mousedown invece di onclick per una risposta più rapida
-        el.addEventListener('mousedown', function(e) {
-            // Impedisce al browser di selezionare il testo (evita il blocco blu)
-            e.preventDefault(); 
-            
-            if(document.body.classList.contains('locked-mail')) return;
-            
-            // Attiva/disattiva la selezione della singola frase
-            this.classList.toggle('selected');
+        elements.forEach(el => {
+            el.addEventListener('mousedown', function(e) {
+                e.preventDefault(); 
+                if(document.body.classList.contains('locked-mail')) return;
+                this.classList.toggle('selected');
+            });
         });
-    });
-
-    // ... resto del codice (resetAnalisi e checkResults) ...
-
 
         function resetAnalisi() {
             if(document.body.classList.contains('locked-mail')) return;
