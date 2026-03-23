@@ -3,143 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisi Forense - Sistema di Scansione</title>
+    <title>OSINT Analysis - Caso Luca Fabbri</title>
     <style>
         :root {
             --neon-cyan: #00e5ff;
             --neon-green: #00ff41;
             --neon-red: #ff1744;
-            --bg-dark: #050505;
+            --bg-black: #000000;
+            --panel-bg: #0a0a0a;
+            --border-gray: #1a1a1a;
         }
 
         body { 
-            margin: 0; 
-            background: var(--bg-dark); 
+            background: var(--bg-black); 
+            color: #ffffff; 
             font-family: 'Courier New', Courier, monospace; 
-            color: var(--neon-cyan);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Contenitore Principale */
+        .container { width: 100%; max-width: 900px; }
+
+        /* Testi Introduttivi */
+        header { margin-bottom: 40px; line-height: 1.6; text-align: justify; color: #ddd; }
+        h2 { color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Area Gioco */
         #wrapper {
             position: relative;
-            width: 95%;
-            max-width: 1000px;
-            margin-top: 20px;
-            border: 2px solid #222;
-            overflow: hidden;
+            width: 100%;
+            border: 2px solid var(--border-gray);
             background: #000;
+            line-height: 0;
         }
 
         #scena-img {
-            width: 100%;
-            height: auto;
-            display: block;
-            cursor: crosshair;
-            user-select: none;
-            -webkit-user-drag: none;
+            width: 100%; height: auto;
+            display: block; cursor: crosshair;
+            user-select: none; -webkit-user-drag: none;
         }
 
-        /* Layer di Debug - Mostra i clip-path */
         #debug-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            display: none; /* Attivabile col tasto */
-            z-index: 5;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; display: none; z-index: 5;
         }
 
-        .debug-shape {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 255, 65, 0.2);
-            border: 1px solid var(--neon-green);
-        }
-
-        /* Feedback visivo dei click */
         .punto {
-            position: absolute;
-            width: 10px; height: 10px;
-            border: 2px solid var(--neon-cyan);
-            background: rgba(0, 229, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 10;
-            box-shadow: 0 0 8px var(--neon-cyan);
+            position: absolute; width: 12px; height: 12px;
+            border: 2px solid var(--neon-cyan); border-radius: 50%;
+            background: rgba(0, 229, 255, 0.2);
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 10;
         }
 
-        /* Interfaccia Comandi */
-        .interfaccia {
-            width: 95%;
-            max-width: 1000px;
-            background: #111;
-            padding: 20px;
-            border: 2px solid #222;
+        /* Interfaccia Analisi */
+        .interface-panel {
+            background: var(--panel-bg);
+            padding: 25px;
+            border: 2px solid var(--border-gray);
             border-top: none;
             text-align: center;
-            box-sizing: border-box;
+            margin-bottom: 50px;
         }
 
-        .btn-group { margin-bottom: 15px; }
-
-        button {
-            padding: 12px 20px;
-            margin: 5px;
-            background: transparent;
-            color: var(--neon-cyan);
+        .btn-main {
+            padding: 12px 25px; margin: 5px;
+            background: transparent; color: var(--neon-cyan);
             border: 1px solid var(--neon-cyan);
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+            font-family: inherit; font-weight: bold; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase;
         }
 
-        button:hover {
-            background: var(--neon-cyan);
-            color: #000;
+        .btn-main:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        .btn-main:disabled { border-color: #333; color: #333; }
+
+        #feedback { margin-top: 15px; color: var(--neon-cyan); font-size: 0.9em; }
+
+        /* Sezione Autorizzazione (In fondo) */
+        .auth-box {
+            border: 1px solid var(--border-gray);
+            padding: 30px;
+            border-radius: 4px;
+            text-align: center;
+            background: var(--panel-bg);
         }
 
-        button:disabled { border-color: #444; color: #444; }
+        .auth-box h3 { color: var(--neon-green); font-size: 0.8em; margin-bottom: 20px; }
 
-        #btn-debug { border-color: #ffeb3b; color: #ffeb3b; }
-
-        #feedback { 
-            font-size: 1.1em; 
-            min-height: 50px;
-            line-height: 1.4;
+        input { 
+            background: #000; border: 1px solid var(--neon-green);
+            color: var(--neon-green); padding: 12px; width: 80%;
+            text-align: center; margin-bottom: 15px; font-family: inherit;
         }
 
-        .success { color: var(--neon-green); font-weight: bold; }
-        .error { color: var(--neon-red); }
+        .btn-auth {
+            background: var(--neon-green); color: #000; border: none;
+            padding: 12px; width: 84%; font-weight: bold; cursor: pointer;
+        }
+
+        #link-area { display: none; margin-top: 20px; border-top: 1px solid #222; padding-top: 20px; }
+        .btn-next {
+            color: #000; background: var(--neon-green); text-decoration: none;
+            padding: 15px; display: block; font-weight: bold; margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-<div id="wrapper">
-    <img id="scena-img" src="https://leys7.github.io/Protocollo-Fabbri/peek.png" alt="Analisi Immagine" onmousedown="registraClic(event)">
-    <div id="debug-layer"></div>
-</div>
+<div class="container">
+    <header>
+        <p>Il Liceo Mazzini conosce già Luca Fabbri: è nei loro database, sanno dove abita e che voti prende. Ma questa immagine, che il ragazzo ha ingenuamente reso pubblica sul suo profilo social, racconta una storia molto più profonda. È la mappa delle sue abitudini, delle sue debolezze e delle sue tracce digitali.</p>
+        <p>Guardate bene: non sono solo mobili e schermi. In questa stanza ci sono dettagli che permettono a chiunque di ricostruire la sua vita privata oltre il semplice registro scolastico. Chi ha hackerato il sistema della scuola potrebbe aver trovato proprio qui, in questo caos apparentemente innocuo, le informazioni necessarie per incastrarlo o per rubare la sua identità.</p>
+        <p>Ora tocca a te: devi agire come un analista OSINT. Identifica gli elementi critici che rivelano chi è Luca, come vive e quali segreti ha lasciato esposti alla portata di un clic.</p>
+    </header>
 
-<div class="interfaccia">
-    <div class="btn-group">
-        <button id="btn-analizza" onclick="valuta()">AVVIA SCANSIONE FORENSE</button>
-        <button id="btn-reset" onclick="resetScansione()">RESET</button>
-        <button id="btn-debug" onclick="toggleDebug()">VISUALIZZA HITBOX</button>
+    <h2>L'Enigma:</h2>
+    <ul>
+        <li><strong>ANALISI ATTIVA:</strong> Esamina l'immagine della stanza e seleziona i punti sensibili che potrebbero essere utilizzati per una profilazione psicologica o tecnica.</li>
+        <li>Clicca sugli elementi sospetti e poi avvia la <strong>Scansione Forense</strong>. Se la tua analisi sarà abbastanza accurata da superare il rumore di fondo, otterrai il codice dossier per procedere.</li>
+    </ul>
+
+    <div id="wrapper">
+        <img id="scena-img" src="https://leys7.github.io/Protocollo-Fabbri/peek.png" alt="Analisi Scena" onmousedown="registraClic(event)">
+        <div id="debug-layer"></div>
     </div>
-    <p id="feedback">Puntatore pronto. Individua le anomalie nella scena.</p>
-</div>
 
+    <div class="interface-panel">
+        <button id="btn-analizza" class="btn-main" onclick="valuta()">Avvia Scansione Forense</button>
+        <button id="btn-reset" class="btn-main" onclick="resetScansione()">Reset Analisi</button>
+        <p id="feedback">Analizza l'immagine e individua le falle di sicurezza.</p>
+    </div>
+
+    <div class="auth-box">
+        <h3>INSERIRE CODICE AUTORIZZAZIONE</h3>
+        <input type="text" id="passInput" placeholder="CODICE...">
+        <button id="checkBtn" class="btn-auth">VERIFICA CODICE</button>
+
+        <div id="link-area">
+            <p style="color: var(--neon-green); font-weight: bold;">ACCESSO AUTORIZZATO</p>
+            <a href="https://sites.google.com/cnos-fap.it/sicurezza-digitale/gjfgjh-3" target="_blank" class="btn-next">VAI AL CASO 003 →</a>
+        </div>
+    </div>
+</div>
 <script>
     let clicEffettuati = [];
-    const img = document.getElementById('scena-img');
     const feedback = document.getElementById('feedback');
-    const debugLayer = document.getElementById('debug-layer');
+    const img = document.getElementById('scena-img');
 
-    // Mappatura basata sui tuoi clip-path
+    // Mappatura precisa basata sui tuoi clip-path
     const zoneTarget = [
         { id: 0, tipo: "poly", punti: [{x:4, y:20}, {x:15, y:25}, {x:15, y:37}, {x:4, y:35}] },
         { id: 1, tipo: "poly", punti: [{x:8, y:68}, {x:20, y:75}, {x:20, y:89}, {x:15, y:100}, {x:0, y:100}, {x:0, y:81}] },
@@ -155,21 +165,18 @@
         const rect = img.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
-
+        
         const dot = document.createElement('div');
         dot.className = 'punto';
-        dot.style.left = x + '%';
-        dot.style.top = y + '%';
+        dot.style.left = x + '%'; dot.style.top = y + '%';
         document.getElementById('wrapper').appendChild(dot);
-
         clicEffettuati.push({x, y});
-        feedback.innerText = `Tracce acquisite: ${clicEffettuati.length}`;
+        feedback.innerText = `Anomalie rilevate: ${clicEffettuati.length}`;
     }
 
-    function isPointInZone(px, py, zone) {
+    function isHit(px, py, zone) {
         if (zone.tipo === "circle") {
-            const d = Math.sqrt(Math.pow(px - zone.cx, 2) + Math.pow(py - zone.cy, 2));
-            return d <= zone.r;
+            return Math.sqrt(Math.pow(px - zone.cx, 2) + Math.pow(py - zone.cy, 2)) <= zone.r;
         }
         if (zone.tipo === "inset") {
             return (py >= zone.t && py <= (100 - zone.b) && px >= zone.l && px <= (100 - zone.r));
@@ -179,8 +186,7 @@
             for (let i = 0, j = zone.punti.length - 1; i < zone.punti.length; j = i++) {
                 const xi = zone.punti[i].x, yi = zone.punti[i].y;
                 const xj = zone.punti[j].x, yj = zone.punti[j].y;
-                const intersect = ((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
-                if (intersect) inside = !inside;
+                if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) inside = !inside;
             }
             return inside;
         }
@@ -188,27 +194,19 @@
     }
 
     function valuta() {
-        let colpiti = new Set();
+        let centri = new Set();
         let errori = 0;
-
         clicEffettuati.forEach(c => {
-            let trovato = false;
-            zoneTarget.forEach(z => {
-                if (isPointInZone(c.x, c.y, z)) {
-                    colpiti.add(z.id);
-                    trovato = true;
-                }
-            });
-            if (!trovato) errori++;
+            let colpito = false;
+            zoneTarget.forEach(z => { if (isHit(c.x, c.y, z)) { centri.add(z.id); colpito = true; } });
+            if (!colpito) errori++;
         });
 
-        const punteggio = colpiti.size - errori;
-        document.getElementById('btn-analizza').disabled = true;
-
-        if (punteggio >= 7) {
-            feedback.innerHTML = `<span class="success">ACCESSO AUTORIZZATO</span><br>Punteggio: ${punteggio}. DOSSIER 002: TRACCIA-00`;
+        const score = centri.size - errori;
+        if (score >= 7) {
+            feedback.innerHTML = `<span style="color:var(--neon-green)">ANALISI POSITIVA.</span><br>CODICE DOSSIER: <b style="background:#00ff41; color:#000; padding:2px 5px">TRACCIA-00</b>`;
         } else {
-            feedback.innerHTML = `<span class="error">ACCESSO NEGATO</span><br>Rilevazioni insufficienti (Punti: ${punteggio}).`;
+            feedback.innerHTML = `<span style="color:var(--neon-red)">ANALISI FALLITA.</span><br>Troppo rumore di fondo o dati mancanti.`;
         }
     }
 
@@ -216,29 +214,20 @@
         clicEffettuati = [];
         document.querySelectorAll('.punto').forEach(p => p.remove());
         document.getElementById('btn-analizza').disabled = false;
-        feedback.innerText = "Analisi resettata. Sistema pronto.";
+        feedback.innerText = "Sistema resettato. Pronti per nuova scansione.";
     }
 
-    function toggleDebug() {
-        const isVisible = debugLayer.style.display === 'block';
-        debugLayer.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) {
-            debugLayer.innerHTML = '';
-            zoneTarget.forEach(z => {
-                const div = document.createElement('div');
-                div.className = 'debug-shape';
-                if(z.tipo === "poly") {
-                    div.style.clipPath = `polygon(${z.punti.map(p => p.x + '% ' + p.y + '%').join(',')})`;
-                } else if(z.tipo === "circle") {
-                    div.style.clipPath = `circle(${z.r}% at ${z.cx}% ${z.cy}%)`;
-                } else if(z.tipo === "inset") {
-                    div.style.clipPath = `inset(${z.t}% ${z.r}% ${z.b}% ${z.l}%)`;
-                }
-                debugLayer.appendChild(div);
-            });
+    // Logica Codice Autorizzazione
+    document.getElementById('checkBtn').onclick = function() {
+        var p = document.getElementById('passInput').value.toUpperCase().trim();
+        if (p === "TRACCIA-00") {
+            document.getElementById('link-area').style.display = "block";
+            this.style.display = "none";
+            document.getElementById('passInput').disabled = true;
+        } else {
+            alert("ERRORE: Credenziali non valide.");
         }
-    }
+    };
 </script>
-
 </body>
 </html>
