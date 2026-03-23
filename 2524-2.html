@@ -3,35 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisi Forense - Security Lab</title>
+    <title>Analisi Forense - Sistema di Scansione</title>
     <style>
-        /* Variabili Globali per facile manutenzione */
         :root {
             --neon-cyan: #00e5ff;
-            --neon-red: #ff1744;
             --neon-green: #00ff41;
-            --bg-dark: #0a0a0a;
+            --neon-red: #ff1744;
+            --bg-dark: #050505;
         }
 
         body { 
             margin: 0; 
-            padding: 0; 
             background: var(--bg-dark); 
             font-family: 'Courier New', Courier, monospace; 
             color: var(--neon-cyan);
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
+        /* Contenitore Principale */
         #wrapper {
             position: relative;
             width: 95%;
-            max-width: 900px;
-            margin: 20px auto;
-            border: 1px solid #333;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-            line-height: 0; /* Rimuove spazi vuoti sotto l'immagine */
+            max-width: 1000px;
+            margin-top: 20px;
+            border: 2px solid #222;
+            overflow: hidden;
+            background: #000;
         }
 
         #scena-img {
@@ -43,123 +43,116 @@
             -webkit-user-drag: none;
         }
 
-        /* Classe per i click dell'utente */
-        .punto {
+        /* Layer di Debug - Mostra i clip-path */
+        #debug-layer {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 2px solid var(--neon-cyan);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 229, 255, 0.4);
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 10;
-        }
-
-        /* --- MODALITÀ DEBUG: VISUALIZZAZIONE ZONE --- */
-        .debug-zone {
-            position: absolute;
-            border: 1px dashed white;
-            background: rgba(255, 255, 255, 0.2);
-            pointer-events: none; /* Non deve interferire con i click */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: white;
+            display: none; /* Attivabile col tasto */
             z-index: 5;
         }
 
+        .debug-shape {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid var(--neon-green);
+        }
+
+        /* Feedback visivo dei click */
+        .punto {
+            position: absolute;
+            width: 10px; height: 10px;
+            border: 2px solid var(--neon-cyan);
+            background: rgba(0, 229, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* Interfaccia Comandi */
         .interfaccia {
             width: 95%;
-            max-width: 900px;
+            max-width: 1000px;
             background: #111;
             padding: 20px;
+            border: 2px solid #222;
+            border-top: none;
             text-align: center;
-            border: 1px solid #333;
             box-sizing: border-box;
         }
 
-        .controls { margin-bottom: 15px; }
+        .btn-group { margin-bottom: 15px; }
 
         button {
-            padding: 12px 24px;
+            padding: 12px 20px;
+            margin: 5px;
             background: transparent;
             color: var(--neon-cyan);
             border: 1px solid var(--neon-cyan);
             font-family: inherit;
             font-weight: bold;
-            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 5px;
+            transition: 0.3s;
         }
 
         button:hover {
             background: var(--neon-cyan);
             color: #000;
-            box-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        button:disabled { border-color: #444; color: #444; cursor: not-allowed; }
+        button:disabled { border-color: #444; color: #444; }
 
-        #feedback { margin-top: 15px; line-height: 1.5; }
+        #btn-debug { border-color: #ffeb3b; color: #ffeb3b; }
+
+        #feedback { 
+            font-size: 1.1em; 
+            min-height: 50px;
+            line-height: 1.4;
+        }
+
+        .success { color: var(--neon-green); font-weight: bold; }
+        .error { color: var(--neon-red); }
     </style>
 </head>
 <body>
 
 <div id="wrapper">
-    <img id="scena-img" src="https://leys7.github.io/Protocollo-Fabbri/peek.png" alt="Scena del crimine" onmousedown="registraClic(event)">
+    <img id="scena-img" src="https://leys7.github.io/Protocollo-Fabbri/peek.png" alt="Analisi Immagine" onmousedown="registraClic(event)">
     <div id="debug-layer"></div>
 </div>
 
 <div class="interfaccia">
-    <div class="controls">
-        <button id="btn-analizza" onclick="valuta()">Avvia Scansione</button>
-        <button id="btn-reset" onclick="resetScansione()">Reset</button>
-        <button id="btn-debug" onclick="toggleDebug()" style="border-color: yellow; color: yellow;">Toggle Debug</button>
+    <div class="btn-group">
+        <button id="btn-analizza" onclick="valuta()">AVVIA SCANSIONE FORENSE</button>
+        <button id="btn-reset" onclick="resetScansione()">RESET</button>
+        <button id="btn-debug" onclick="toggleDebug()">VISUALIZZA HITBOX</button>
     </div>
-    <p id="feedback">Analizza l'immagine e individua le falle di sicurezza.</p>
+    <p id="feedback">Puntatore pronto. Individua le anomalie nella scena.</p>
 </div>
 
 <script>
     let clicEffettuati = [];
-    const feedback = document.getElementById('feedback');
     const img = document.getElementById('scena-img');
+    const feedback = document.getElementById('feedback');
     const debugLayer = document.getElementById('debug-layer');
 
-    // Mappatura zone: t=top, l=left, w=width, h=height (tutto in %)
+    // Mappatura basata sui tuoi clip-path
     const zoneTarget = [
-        {t:25, l:4, w:10, h:9}, {t:65, l:2, w:18, h:32},
-        {t:67, l:18, w:7, h:14}, {t:80, l:21, w:23, h:19},
-        {t:62, l:66, w:12, h:20}, {t:44, l:81, w:14, h:22},
-        {t:17, l:44, w:15, h:24}, {t:6, l:48, w:7, h:10}
+        { id: 0, tipo: "poly", punti: [{x:4, y:20}, {x:15, y:25}, {x:15, y:37}, {x:4, y:35}] },
+        { id: 1, tipo: "poly", punti: [{x:8, y:68}, {x:20, y:75}, {x:20, y:89}, {x:15, y:100}, {x:0, y:100}, {x:0, y:81}] },
+        { id: 2, tipo: "inset", t:68, r:75, b:5, l:20 }, 
+        { id: 3, tipo: "poly", punti: [{x:33, y:83}, {x:47, y:92}, {x:43, y:100}, {x:22, y:100}] },
+        { id: 4, tipo: "circle", cx: 79, cy: 75, r: 6.7 },
+        { id: 5, tipo: "poly", punti: [{x:82, y:45}, {x:94, y:45}, {x:94, y:65}, {x:82, y:63}] },
+        { id: 6, tipo: "poly", punti: [{x:45, y:15}, {x:61, y:18}, {x:61, y:42}, {x:45, y:41}] },
+        { id: 7, tipo: "circle", cx: 54, cy: 5, r: 5.5 }
     ];
-
-    // Funzione per visualizzare le zone (per il "cucito" tecnico)
-    function renderDebugZones() {
-        debugLayer.innerHTML = '';
-        zoneTarget.forEach((z, i) => {
-            const area = document.createElement('div');
-            area.className = 'debug-zone';
-            area.style.top = z.t + '%';
-            area.style.left = z.l + '%';
-            area.style.width = z.w + '%';
-            area.style.height = z.h + '%';
-            area.innerText = i;
-            debugLayer.appendChild(area);
-        });
-    }
-
-    function toggleDebug() {
-        const isVisible = debugLayer.style.display === 'block';
-        debugLayer.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) renderDebugZones();
-    }
 
     function registraClic(e) {
         const rect = img.getBoundingClientRect();
-        // Calcolo preciso in percentuale rispetto all'immagine caricata
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
 
@@ -169,32 +162,53 @@
         dot.style.top = y + '%';
         document.getElementById('wrapper').appendChild(dot);
 
-        clicEffettuati.push({x: x, y: y});
-        feedback.innerText = `Tracce rilevate: ${clicEffettuati.length}`;
+        clicEffettuati.push({x, y});
+        feedback.innerText = `Tracce acquisite: ${clicEffettuati.length}`;
+    }
+
+    function isPointInZone(px, py, zone) {
+        if (zone.tipo === "circle") {
+            const d = Math.sqrt(Math.pow(px - zone.cx, 2) + Math.pow(py - zone.cy, 2));
+            return d <= zone.r;
+        }
+        if (zone.tipo === "inset") {
+            return (py >= zone.t && py <= (100 - zone.b) && px >= zone.l && px <= (100 - zone.r));
+        }
+        if (zone.tipo === "poly") {
+            let inside = false;
+            for (let i = 0, j = zone.punti.length - 1; i < zone.punti.length; j = i++) {
+                const xi = zone.punti[i].x, yi = zone.punti[i].y;
+                const xj = zone.punti[j].x, yj = zone.punti[j].y;
+                const intersect = ((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+            return inside;
+        }
+        return false;
     }
 
     function valuta() {
-        let centri = new Set();
+        let colpiti = new Set();
         let errori = 0;
 
         clicEffettuati.forEach(c => {
-            let colpito = false;
-            zoneTarget.forEach((z, i) => {
-                if(c.x >= z.l && c.x <= (z.l + z.w) && c.y >= z.t && c.y <= (z.t + z.h)) {
-                    centri.add(i);
-                    colpito = true;
+            let trovato = false;
+            zoneTarget.forEach(z => {
+                if (isPointInZone(c.x, c.y, z)) {
+                    colpiti.add(z.id);
+                    trovato = true;
                 }
             });
-            if (!colpito) errori++;
+            if (!trovato) errori++;
         });
 
+        const punteggio = colpiti.size - errori;
         document.getElementById('btn-analizza').disabled = true;
-        const punteggioNetto = centri.size - errori;
 
-        if(punteggioNetto >= 7) {
-            feedback.innerHTML = `<span style="color:var(--neon-green)">ANALISI COMPLETATA. Punteggio: ${punteggioNetto}.</span><br>CODICE DOSSIER 002: <b>TRACCIA-00</b>`;
+        if (punteggio >= 7) {
+            feedback.innerHTML = `<span class="success">ACCESSO AUTORIZZATO</span><br>Punteggio: ${punteggio}. DOSSIER 002: TRACCIA-00`;
         } else {
-            feedback.innerHTML = `<span style="color:var(--neon-red)">FALLITO. Punteggio: ${punteggioNetto}.</span><br>Rilevazioni insufficienti o errate.`;
+            feedback.innerHTML = `<span class="error">ACCESSO NEGATO</span><br>Rilevazioni insufficienti (Punti: ${punteggio}).`;
         }
     }
 
@@ -202,8 +216,27 @@
         clicEffettuati = [];
         document.querySelectorAll('.punto').forEach(p => p.remove());
         document.getElementById('btn-analizza').disabled = false;
-        feedback.innerText = "Analisi resettata. Individua le falle.";
-        feedback.style.color = "var(--neon-cyan)";
+        feedback.innerText = "Analisi resettata. Sistema pronto.";
+    }
+
+    function toggleDebug() {
+        const isVisible = debugLayer.style.display === 'block';
+        debugLayer.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) {
+            debugLayer.innerHTML = '';
+            zoneTarget.forEach(z => {
+                const div = document.createElement('div');
+                div.className = 'debug-shape';
+                if(z.tipo === "poly") {
+                    div.style.clipPath = `polygon(${z.punti.map(p => p.x + '% ' + p.y + '%').join(',')})`;
+                } else if(z.tipo === "circle") {
+                    div.style.clipPath = `circle(${z.r}% at ${z.cx}% ${z.cy}%)`;
+                } else if(z.tipo === "inset") {
+                    div.style.clipPath = `inset(${z.t}% ${z.r}% ${z.b}% ${z.l}%)`;
+                }
+                debugLayer.appendChild(div);
+            });
+        }
     }
 </script>
 
