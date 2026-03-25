@@ -160,19 +160,22 @@
     
     var score = 0;
 
-    // 2. Controllo cumulativo (Ogni match aggiunge punti al totale)
-    
-    // TAG NOMI/OGGETTI
+    // TAG TESTUALI
     if (inputRaw.includes("birba")) { score += 20; }
     if (inputRaw.includes("virtus")) { score += 20; }
     if (inputRaw.includes("#"))      { score += 15; }
     
-    // TAG DATE (Usiamo regex più permissive senza \b se vogliamo che funzioni anche unito)
-    if (/2007/.test(inputRaw)) { score += 30; }
-    if (/1403/.test(inputRaw)) { score += 20; }
-    if (/07/.test(inputRaw))   { score += 15; }
-    
-    // 3. Limite massimo
+    // TAG NUMERICI (Logica di esclusione)
+    if (inputRaw.includes("2007")) { 
+        score += 30; 
+    } else if (inputRaw.includes("07")) { 
+        // Viene eseguito solo se NON c'è "2007"
+        score += 15; 
+    }
+
+    if (inputRaw.includes("1403")) { score += 20; }
+
+    // Limite massimo
     if (score > 100) score = 100;
 
     // 4. Aggiornamento Visivo
