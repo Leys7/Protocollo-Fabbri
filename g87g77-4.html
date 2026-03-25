@@ -29,18 +29,16 @@
             line-height: 1.6; text-align: justify;
         }
 
-        h2 { color: var(--neon-green); text-transform: uppercase; }
+        h2 { color: var(--neon-green); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Log Viewer */
         .log-container {
-            width: 100%; height: 450px;
+            width: 100%; height: 500px;
             border: 1px solid #333; margin-bottom: 40px;
             background: #fff;
         }
 
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Forensic Module */
         .forensic-box {
             background: var(--panel-bg); 
             padding: 25px; border-radius: 4px; 
@@ -49,14 +47,12 @@
         }
 
         .input-row { margin-bottom: 15px; }
-        label { display: block; font-size: 0.7rem; color: #888; margin-bottom: 5px; text-transform: uppercase; }
+        label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
         
         input { 
             background: #000; border: 1px solid #333; color: var(--neon-green); 
             padding: 10px; width: 100%; box-sizing: border-box; outline: none;
         }
-
-        input:focus { border-color: var(--neon-green); }
 
         .btn-exe { 
             background: var(--neon-green); color: #000; border: none; 
@@ -64,34 +60,26 @@
             text-transform: uppercase; margin-top: 10px;
         }
 
-        #access-granted, #access-denied { 
-            display: none; margin-top: 20px; padding: 15px; text-align: center; border: 2px solid;
+        #result-box { 
+            display: none; margin-top: 20px; padding: 15px; text-align: center; 
+            border: 2px solid var(--neon-green); background: rgba(0,255,65,0.1); 
         }
-
-        #access-granted { border-color: var(--neon-green); background: rgba(0,255,65,0.1); }
-        #access-denied { border-color: var(--neon-red); background: rgba(255,23,68,0.1); color: var(--neon-red); }
 
         .final-auth {
             border: 1px solid #333; padding: 30px; border-radius: 8px;
             text-align: center; background: var(--panel-bg); margin-top: 60px;
         }
-
-        .btn-link { color: #000; background: var(--neon-green); text-decoration: none; padding: 15px; display: block; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
-<body>
+    <body>
 <div class="container">
     <div class="briefing">
         Il peso delle prove è tutto in un unico file. La presidenza del Liceo Mazzini non ha dubbi: i log del server scolastico parlano chiaro. C'è un timestamp, un'operazione di invio mail massivo e, accanto, il nome utente che ha firmato il disastro: <strong>fabbri_l</strong>. Per la scuola, il caso è chiuso prima ancora di iniziare.<br><br>
-        Ma i dati grezzi sono come un riflesso in uno specchio sporco: se non li pulisci, non vedi cosa c'è dietro. Ti è stato concesso il foglio degli accessi che l'amministratore di sistema sta usando come prova schiacciante contro Luca. Mentre tutti si fermano al nome, tu devi guardare i numeri. Devi analizzare gli indirizzi IP, le rotte e quegli strani errori di sistema che compaiono proprio nei momenti cruciali. La verità non è scritta nel nome dell'utente, ma nelle tracce che il dispositivo ha lasciato dietro di sé quella notte.
+        Ma i dati grezzi sono come un riflesso in uno specchio sporco: se non li pulisci, non vedi cosa c'è dietro. Ti è stato concesso il foglio degli accessi che l'amministratore di sistema sta usando come prova schiacciante contro Luca. Mentre tutti si fermano al nome, tu devi guardare i numeri. Devi analizzare gli indirizzi IP, le rotte e quegli strani errori di sistema che compaiono proprio nei momenti cruciali. 
     </div>
 
     <h2>L'Enigma:</h2>
-    <ul>
-        <li><strong>ANALISI FORENSE:</strong> Esamina il Registro degli Accessi Scolastici sottostante.</li>
-        <li><strong>Trova le discrepanze:</strong> identifica l'IP Sorgente della connessione incriminata e l'ID Utente registrato.</li>
-        <li>Inserisci i dati nel modulo per validare la tua teoria.</li>
-    </ul>
+    <p>ANALISI FORENSE: Esamina il Registro degli Accessi. Trova le discrepanze e convalida la tua teoria nel modulo sottostante.</p>
 
     <div class="log-container">
         <iframe src="https://docs.google.com/spreadsheets/d/1xENwzU7p3K4rqmhvzRn06sAVuMOcdf4o0am9kIUm56c/preview"></iframe>
@@ -101,7 +89,7 @@
         <div style="font-size:0.7rem; font-weight:bold; opacity: 0.5; margin-bottom:15px;">> UNIT_01_FORENSIC_V4.9</div>
         
         <div class="input-row">
-            <label>01. IP Sorgente Incriminato:</label>
+            <label>01. IP Sorgente (Esterno):</label>
             <input type="text" id="v1" placeholder="000.000.000.000">
         </div>
 
@@ -117,65 +105,62 @@
 
         <button class="btn-exe" onclick="doAnalysis()">ANALIZZA DATI</button>
 
-        <div id="access-granted">
-            <span style="color:var(--neon-green)">ANALISI COMPLETATA: Bianchi incastrato.</span><br>
-            KEY: <strong style="font-size: 1.2rem; color: #fff;">MEMORIA-INF</strong>
-        </div>
-
-        <div id="access-denied">
-            <strong>ATTENZIONE:</strong> Hai accusato Luca Fabbri. Il sistema accetta la tua conclusione, ma i dati IP suggeriscono una discrepanza. <br>
-            <small>Codice Errore: 004-FALSO-POSITIVO</small>
+        <div id="result-box">
+            <span id="res-label" style="font-size: 0.7rem; color: #888;"></span><br>
+            <strong id="res-key" style="font-size: 1.4rem; color: #fff;"></strong>
         </div>
     </div>
 
     <div class="final-auth">
         <h3>INSERIRE CODICE AUTORIZZAZIONE</h3>
-        <input type="text" id="passInput" placeholder="CODICE..." style="width: 80%; text-align: center;">
+        <input type="text" id="passInput" placeholder="CODICE...">
         <br><br>
         <button id="checkBtn" class="btn-exe" style="width: 85%;">VERIFICA CODICE</button>
-
-        <div id="link-area" style="display:none;">
-            <p style="color: var(--neon-green); font-weight: bold;">ACCESSO AUTORIZZATO</p>
-            <a href="https://sites.google.com/cnos-fap.it/sicurezza-digitale/hoh%C3%B2h-5" target="_blank" class="btn-link">VAI AL CASO 005 →</a>
-        </div>
     </div>
 </div>
-<script>
+        <script>
     function doAnalysis() {
         var p1 = document.getElementById('v1').value.trim();
         var p2 = document.getElementById('v2').value.trim().toLowerCase();
         var p3 = document.getElementById('v3').value.trim().toLowerCase();
         
-        var win = document.getElementById('access-granted');
-        var fail = document.getElementById('access-denied');
+        var box = document.getElementById('result-box');
+        var label = document.getElementById('res-label');
+        var keyDisplay = document.getElementById('res-key');
 
-        win.style.display = 'none';
-        fail.style.display = 'none';
+        box.style.display = 'none';
 
-        // PERCORSO CORRETTO: Incastra Bianchi
+        // SENTIERO CORRETTO (Bianchi)
         if (p1 === "172.24.110.4" && p2 === "fabbri_l" && p3 === "bianchi") {
-            win.style.display = 'block';
+            label.innerText = "RELAZIONE FORENSE GENERATA:";
+            keyDisplay.innerText = "MEMORIA-INF";
+            box.style.display = 'block';
         } 
-        // PERCORSO ALTERNATIVO: Accusa Fabbri
+        // SENTIERO ERRATO (Fabbri)
         else if (p3 === "fabbri") {
-            fail.style.display = 'block';
+            label.innerText = "RELAZIONE CHIUSA - COLPEVOLE IDENTIFICATO:";
+            keyDisplay.innerText = "SENTENZA-F";
+            box.style.display = 'block';
         } 
         else {
-            alert("DATI INSUFFICIENTI: Ricontrolla i timestamp e gli IP nel log.");
+            alert("ERRORE: I dati inseriti non permettono di chiudere l'indagine.");
         }
     }
 
-    // Gestione Accesso Caso 005
     document.getElementById('checkBtn').onclick = function() {
         var p = document.getElementById('passInput').value.toUpperCase().trim();
-        var area = document.getElementById('link-area');
         
+        // REINDIRIZZAMENTO DOPPIO
         if (p === "MEMORIA-INF") {
-            area.style.display = "block";
-            this.style.display = "none";
-            document.getElementById('passInput').disabled = true;
-        } else {
-            alert("ACCESSO NEGATO: Codice non valido.");
+            // URL Sentiero Corretto (Caso 005 vero)
+            window.location.href = "https://sites.google.com/cnos-fap.it/sicurezza-digitale/hoh%C3%B2h-5";
+        } 
+        else if (p === "SENTENZA-F") {
+            // URL Sentiero Sbagliato (Pagina di errore o finale alternativo)
+            window.location.href = "https://sites.google.com/cnos-fap.it/sicurezza-digitale/errore-fabbri";
+        } 
+        else {
+            alert("ACCESSO NEGATO: Codice non riconosciuto dal database.");
         }
     };
 </script>
