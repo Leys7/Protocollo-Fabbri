@@ -1,85 +1,83 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caso 004 - Analisi Forense</title>
-    <style>
-        :root {
-            --neon-green: #00ff41;
-            --neon-red: #ff1744;
-            --bg-black: #0a0a0b;
-            --panel-bg: #16161a;
-        }
+<style>
+    :root {
+        --neon-green: #00ff41;
+        --neon-red: #ff1744;
+        --bg-black: #0a0a0b;
+        --panel-bg: #16161a;
+    }
 
-        body { 
-            background: var(--bg-black); 
-            color: #ffffff; 
-            font-family: 'Courier New', Courier, monospace; 
-            margin: 0; padding: 40px 10px;
-            display: flex; flex-direction: column; align-items: center;
-        }
+    body { 
+        background: var(--bg-black); 
+        color: #ffffff; 
+        font-family: 'Courier New', Courier, monospace; 
+        margin: 0; padding: 40px 10px;
+        display: flex; flex-direction: column; align-items: center;
+    }
 
-        .container { width: 100%; max-width: 900px; }
+    .container { width: 100%; max-width: 900px; }
 
-        .briefing { 
-            background: rgba(0, 255, 65, 0.05);
-            border-left: 4px solid var(--neon-green);
-            padding: 20px; margin-bottom: 30px;
-            line-height: 1.6; text-align: justify;
-        }
+    .briefing { 
+        background: rgba(0, 255, 65, 0.05);
+        border-left: 4px solid var(--neon-green);
+        padding: 20px; margin-bottom: 30px;
+        line-height: 1.6; text-align: justify;
+    }
 
-        h2 { color: var(--neon-green); text-transform: uppercase; letter-spacing: 1px; }
+    .log-container {
+        width: 100%; height: 500px;
+        border: 1px solid #333; margin-bottom: 40px;
+        background: #fff;
+    }
 
-        .log-container {
-            width: 100%; height: 500px;
-            border: 1px solid #333; margin-bottom: 40px;
-            background: #fff;
-        }
+    iframe { width: 100%; height: 100%; border: none; }
 
-        iframe { width: 100%; height: 100%; border: none; }
+    .forensic-box {
+        background: var(--panel-bg); 
+        padding: 25px; border-radius: 4px; 
+        border: 1px solid #333; border-top: 3px solid var(--neon-green);
+        max-width: 450px; margin: 40px auto;
+    }
 
-        .forensic-box {
-            background: var(--panel-bg); 
-            padding: 25px; border-radius: 4px; 
-            border: 1px solid #333; border-top: 3px solid var(--neon-green);
-            max-width: 450px; margin: 40px auto;
-        }
+    .input-row { margin-bottom: 15px; }
+    label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+    
+    input { 
+        background: #000; border: 1px solid #333; color: var(--neon-green); 
+        padding: 10px; width: 100%; box-sizing: border-box; outline: none;
+    }
 
-        .input-row { margin-bottom: 15px; }
-        label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        
-        input { 
-            background: #000; border: 1px solid #333; color: var(--neon-green); 
-            padding: 10px; width: 100%; box-sizing: border-box; outline: none;
-        }
+    .btn-exe { 
+        background: var(--neon-green); color: #000; border: none; 
+        padding: 15px; width: 100%; font-weight: bold; cursor: pointer;
+        text-transform: uppercase; margin-top: 10px;
+    }
 
-        .btn-exe { 
-            background: var(--neon-green); color: #000; border: none; 
-            padding: 15px; width: 100%; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; margin-top: 10px;
-        }
+    #result-box { 
+        display: none; margin-top: 20px; padding: 15px; text-align: center; 
+        border: 2px solid var(--neon-green); background: rgba(0,255,65,0.1); 
+        animation: pulse 2s infinite;
+    }
 
-        #result-box { 
-            display: none; margin-top: 20px; padding: 15px; text-align: center; 
-            border: 2px solid var(--neon-green); background: rgba(0,255,65,0.1); 
-        }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); }
+    }
 
-        .final-auth {
-            border: 1px solid #333; padding: 30px; border-radius: 8px;
-            text-align: center; background: var(--panel-bg); margin-top: 60px;
-        }
-    </style>
-</head>
-    <body>
+    .final-auth {
+        border: 1px solid #333; padding: 30px; border-radius: 8px;
+        text-align: center; background: var(--panel-bg); margin: 60px 0;
+    }
+</style>
+<body>
 <div class="container">
     <div class="briefing">
         Il peso delle prove è tutto in un unico file. La presidenza del Liceo Mazzini non ha dubbi: i log del server scolastico parlano chiaro. C'è un timestamp, un'operazione di invio mail massivo e, accanto, il nome utente che ha firmato il disastro: <strong>fabbri_l</strong>. Per la scuola, il caso è chiuso prima ancora di iniziare.<br><br>
-        Ma i dati grezzi sono come un riflesso in uno specchio sporco: se non li pulisci, non vedi cosa c'è dietro. Ti è stato concesso il foglio degli accessi che l'amministratore di sistema sta usando come prova schiacciante contro Luca. Mentre tutti si fermano al nome, tu devi guardare i numeri. Devi analizzare gli indirizzi IP, le rotte e quegli strani errori di sistema che compaiono proprio nei momenti cruciali. 
+        Ma i dati grezzi sono come un riflesso in uno specchio sporco: se non li pulisci, non vedi cosa c'è dietro. Ti è stato concesso il foglio degli accessi che l'amministratore di sistema sta usando come prova schiacciante contro Luca. Mentre tutti si fermano al nome, tu devi guardare i numeri. Devi analizzare gli indirizzi IP, le rotte e quegli strani errori di sistema che compaiono proprio nei momenti cruciali. La verità non è scritta nel nome dell'utente, ma nelle tracce che il dispositivo ha lasciato dietro di sé quella notte.
     </div>
 
-    <h2>L'Enigma:</h2>
-    <p>ANALISI FORENSE: Esamina il Registro degli Accessi. Trova le discrepanze e convalida la tua teoria nel modulo sottostante.</p>
+    <h2 style="color: var(--neon-green);">L'Enigma:</h2>
+    <p><strong>ANALISI FORENSE:</strong> Esamina il Registro degli Accessi. Trova le discrepanze, identifica l'IP Sorgente della connessione incriminata e convalida la tua teoria.</p>
 
     <div class="log-container">
         <iframe src="https://docs.google.com/spreadsheets/d/1xENwzU7p3K4rqmhvzRn06sAVuMOcdf4o0am9kIUm56c/preview"></iframe>
@@ -89,21 +87,21 @@
         <div style="font-size:0.7rem; font-weight:bold; opacity: 0.5; margin-bottom:15px;">> UNIT_01_FORENSIC_V4.9</div>
         
         <div class="input-row">
-            <label>01. IP Sorgente (Esterno):</label>
+            <label>01. IP Sorgente (iPhone):</label>
             <input type="text" id="v1" placeholder="000.000.000.000">
         </div>
 
         <div class="input-row">
             <label>02. ID Utente nel Log:</label>
-            <input type="text" id="v2" placeholder="NOME_INIZIALE">
+            <input type="text" id="v2" placeholder="NOME_UTENTE">
         </div>
 
         <div class="input-row">
-            <label>03. Soggetto Responsabile (Cognome):</label>
+            <label>03. Responsabile Effettivo (Cognome):</label>
             <input type="text" id="v3" placeholder="COGNOME">
         </div>
 
-        <button class="btn-exe" onclick="doAnalysis()">ANALIZZA DATI</button>
+        <button class="btn-exe" onclick="doAnalysis()">AVVIA ANALISI INCROCIATA</button>
 
         <div id="result-box">
             <span id="res-label" style="font-size: 0.7rem; color: #888;"></span><br>
@@ -112,17 +110,17 @@
     </div>
 
     <div class="final-auth">
-        <h3>INSERIRE CODICE AUTORIZZAZIONE</h3>
-        <input type="text" id="passInput" placeholder="CODICE...">
-        <br><br>
-        <button id="checkBtn" class="btn-exe" style="width: 85%;">VERIFICA CODICE</button>
+        <h3 style="font-size: 0.8rem; letter-spacing: 2px;">INSERIRE CODICE AUTORIZZAZIONE</h3>
+        <input type="text" id="passInput" placeholder="CODICE..." style="width: 80%; text-align: center; margin-bottom: 20px;">
+        <button id="checkBtn" class="btn-exe" style="width: 85%;">VERIFICA CREDENZIALI</button>
     </div>
 </div>
-        <script>
+<script>
     function doAnalysis() {
-        var p1 = document.getElementById('v1').value.trim();
-        var p2 = document.getElementById('v2').value.trim().toLowerCase();
-        var p3 = document.getElementById('v3').value.trim().toLowerCase();
+        // Pulizia input
+        var ipInput = document.getElementById('v1').value.trim();
+        var userLog = document.getElementById('v2').value.trim().toLowerCase();
+        var culprit = document.getElementById('v3').value.trim().toLowerCase();
         
         var box = document.getElementById('result-box');
         var label = document.getElementById('res-label');
@@ -130,37 +128,40 @@
 
         box.style.display = 'none';
 
-        // SENTIERO CORRETTO (Bianchi)
-        if (p1 === "172.24.110.4" && p2 === "fabbri_l" && p3 === "bianchi") {
-            label.innerText = "RELAZIONE FORENSE GENERATA:";
+        // 1. SENTIERO CORRETTO: Incastra Bianchi (IP 172.24.110.4 + utente fabbri_l + colpevole bianchi)
+        if (ipInput === "172.24.110.4" && userLog === "fabbri_l" && culprit === "bianchi") {
+            label.innerText = "ANOMALIA RILEVATA - KEY GENERATA:";
             keyDisplay.innerText = "MEMORIA-INF";
             box.style.display = 'block';
+            box.style.borderColor = "var(--neon-green)";
         } 
-        // SENTIERO ERRATO (Fabbri)
-        else if (p3 === "fabbri") {
-            label.innerText = "RELAZIONE CHIUSA - COLPEVOLE IDENTIFICATO:";
+        // 2. SENTIERO ERRATO: Accusa Fabbri (Se l'utente scrive "fabbri" come colpevole)
+        else if (culprit === "fabbri") {
+            label.innerText = "PROVE CONFERMATE - KEY GENERATA:";
             keyDisplay.innerText = "SENTENZA-F";
             box.style.display = 'block';
+            box.style.borderColor = "var(--neon-green)"; // Sembra corretto, ma la key è diversa
         } 
+        // 3. ERRORE DI COMPILAZIONE: Se i dati non hanno senso
         else {
-            alert("ERRORE: I dati inseriti non permettono di chiudere l'indagine.");
+            alert("ERRORE: I parametri inseriti non corrispondono ad alcun profilo nel database.");
         }
     }
 
+    // Gestione dei Reindirizzamenti
     document.getElementById('checkBtn').onclick = function() {
         var p = document.getElementById('passInput').value.toUpperCase().trim();
         
-        // REINDIRIZZAMENTO DOPPIO
         if (p === "MEMORIA-INF") {
-            // URL Sentiero Corretto (Caso 005 vero)
+            // Vai al Caso 005 VERO
             window.location.href = "https://sites.google.com/cnos-fap.it/sicurezza-digitale/hoh%C3%B2h-5";
         } 
         else if (p === "SENTENZA-F") {
-            // URL Sentiero Sbagliato (Pagina di errore o finale alternativo)
-            window.location.href = "https://sites.google.com/cnos-fap.it/sicurezza-digitale/errore-fabbri";
+            // Vai al Caso 005 SBAGLIATO (da creare su Google Sites)
+            window.location.href = "https://sites.google.com/cnos-fap.it/sicurezza-digitale/sentiero-errato";
         } 
         else {
-            alert("ACCESSO NEGATO: Codice non riconosciuto dal database.");
+            alert("ACCESSO NEGATO: Il codice inserito è inesistente o scaduto.");
         }
     };
 </script>
