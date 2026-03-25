@@ -148,7 +148,7 @@
         <div style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 20px; color: #888;">BRUTEFORCE TERMINAL v3.0</div>
         
         <input type="text" id="crackInput" placeholder="INSERISCI TAG OSINT..." autocomplete="off">
-        <button class="btn-crack" onclick="()">Avvia Decriptazione</button>
+     <button class="btn-crack" onclick="startCracking()">Avvia Decriptazione</button>
         
         <div id="prob-text" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">VULNERABILITÀ: 0%</div>
         
@@ -176,7 +176,7 @@
     </div>
 </div>
 <script>
- function startCracking() {
+function startCracking() {
     var inputField = document.getElementById('crackInput');
     var inputVal = inputField.value.toLowerCase().trim();
     var fill = document.getElementById('meter-fill');
@@ -184,42 +184,53 @@
     var msg = document.getElementById('statusMsg');
     var reveal = document.getElementById('secret-reveal');
     
-    // Disabilita tasto e input durante la "scansione"
+    // RESET E INIZIALIZZAZIONE
+    var score = 0; // <--- AGGIUNTO: inizializza score a 0
     inputField.disabled = true;
     msg.innerText = "ACCESSO AL KERNEL IN CORSO...";
     msg.style.color = "var(--neon-yellow)";
+    reveal.style.display = "none"; // Nasconde il segreto se era già aperto
 
-    var finalScore = 0;
-    // --- LOGICA PUNTEGGIO (Quella che abbiamo fissato prima) ---
+    // --- LOGICA PUNTEGGIO ---
     if (inputVal.includes("birba"))  score += 20;
     if (inputVal.includes("virtus")) score += 20;
     if (inputVal.includes("#"))      score += 15;
-    if (inputVal.includes("2007")) { score += 30; } 
-    else if (inputVal.includes("07")) { score += 15; }
+    
+    if (inputVal.includes("2007")) { 
+        score += 30; 
+    } else if (inputVal.includes("07")) { 
+        score += 15; 
+    }
+    
     if (inputVal.includes("1403"))   score += 20;
     
-    finalScore = (score > 100) ? 100 : score;
+    var finalScore = (score > 100) ? 100 : score;
 
     // --- EFFETTO MATRIX ---
     let currentDisplayScore = 0;
     let counter = setInterval(() => {
-        currentDisplayScore += 2; // Velocità di salita della barra
+        if (finalScore === 0) { // Gestione caso 0 punti
+            clearInterval(counter);
+            finishScan(0);
+            return;
+        }
+
+        currentDisplayScore += 2;
         
         if (currentDisplayScore >= finalScore) {
             currentDisplayScore = finalScore;
             clearInterval(counter);
-            finishScan(finalScore); // Funzione che chiude l'animazione
+            finishScan(finalScore);
         }
         
         fill.style.width = currentDisplayScore + "%";
         text.innerText = "VULNERABILITÀ: " + currentDisplayScore + "%";
         
-        // Colore dinamico durante la salita
         if (currentDisplayScore < 45) fill.style.backgroundColor = "var(--neon-red)";
         else if (currentDisplayScore < 65) fill.style.backgroundColor = "var(--neon-yellow)";
         else fill.style.backgroundColor = "var(--neon-green)";
         
-    }, 30); // 30ms = fluido a 30fps
+    }, 30);
 }
 
 function finishScan(score) {
@@ -236,10 +247,23 @@ function finishScan(score) {
     } else {
         msg.innerText = "ERRORE: Massa critica insufficiente.";
         msg.style.color = "var(--neon-red)";
-        reveal.style.display = "none";
     }
 }
 
+// Script per il secondo box di validazione
+document.getElementById('checkBtn').onclick = function() {
+    var p = document.getElementById('passInput').value.toUpperCase().trim();
+    var area = document.getElementById('link-area');
+    
+    if (p === "RIFLESSO-24") {
+        area.style.display = "block";
+        this.style.display = "none";
+        document.getElementById('passInput').disabled = true;
+        document.getElementById('passInput').style.borderColor = "#444";
+    } else {
+        alert("ACCESSO NEGATO: Credenziali non riconosciute.");
+    }
+};
     // Script per il secondo box di validazione
     document.getElementById('checkBtn').onclick = function() {
         var p = document.getElementById('passInput').value.toUpperCase().trim();
