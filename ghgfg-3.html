@@ -150,42 +150,57 @@
     </div>
 </div>
 <script>
-    function startCracking() {
-        var inputVal = document.getElementById('crackInput').value.toLowerCase().trim();
-        var fill = document.getElementById('meter-fill');
-        var text = document.getElementById('prob-text');
-        var msg = document.getElementById('statusMsg');
-        var reveal = document.getElementById('secret-reveal');
+ function startCracking() {
+    // 1. Recupero e normalizzazione input (rimuove spazi extra e mette minuscolo)
+    var inputRaw = document.getElementById('crackInput').value.toLowerCase().trim();
+    var fill = document.getElementById('meter-fill');
+    var text = document.getElementById('prob-text');
+    var msg = document.getElementById('statusMsg');
+    var reveal = document.getElementById('secret-reveal');
+    
+    var score = 0;
+
+    // 2. Controllo cumulativo (Ogni match aggiunge punti al totale)
+    
+    // TAG NOMI/OGGETTI
+    if (inputRaw.includes("birba")) { score += 20; }
+    if (inputRaw.includes("virtus")) { score += 20; }
+    if (inputRaw.includes("#"))      { score += 15; }
+    
+    // TAG DATE (Usiamo regex più permissive senza \b se vogliamo che funzioni anche unito)
+    if (/2007/.test(inputRaw)) { score += 30; }
+    if (/1403/.test(inputRaw)) { score += 20; }
+    if (/07/.test(inputRaw))   { score += 15; }
+    
+    // 3. Limite massimo
+    if (score > 100) score = 100;
+
+    // 4. Aggiornamento Visivo
+    fill.style.width = score + "%";
+    text.innerText = "VULNERABILITÀ: " + score + "%";
+
+    // 5. Gestione Stati (Colori e Messaggi)
+    if (score >= 65) {
+        fill.style.backgroundColor = "var(--neon-green)";
+        msg.innerText = "SISTEMA VIOLATO: Corrispondenza trovata!";
+        msg.style.color = "var(--neon-green)";
+        reveal.style.display = "block";
+    } else {
+        reveal.style.display = "none";
+        msg.style.color = "#888";
         
-        var score = 0;
-
-        // Logica di verifica pesata
-        if (inputVal.indexOf("birba") !== -1) score += 20;
-        if (inputVal.indexOf("virtus") !== -1) score += 20;
-        if (inputVal.indexOf("#") !== -1) score += 15;
-        if (/\b2007\b/.test(inputVal)) score += 30; 
-        if (/\b1403\b/.test(inputVal)) score += 20; 
-        if (/\b07\b/.test(inputVal)) score += 15;
-        
-        if (score > 100) score = 100;
-
-        // Aggiornamento interfaccia
-        fill.style.width = score + "%";
-        text.innerText = "VULNERABILITÀ: " + score + "%";
-
-        if (score >= 65) {
-            fill.style.backgroundColor = "var(--neon-green)";
-            msg.innerText = "CRACKING COMPLETATO: MATCH TROVATO!";
-            reveal.style.display = "block";
-            msg.style.color = "var(--neon-green)";
+        if (score === 0) {
+            fill.style.backgroundColor = "var(--neon-red)";
+            msg.innerText = "Nessun dato utile rilevato.";
+        } else if (score < 45) {
+            fill.style.backgroundColor = "var(--neon-red)";
+            msg.innerText = "Dati insufficienti...";
         } else {
-            reveal.style.display = "none";
-            fill.style.backgroundColor = (score < 45) ? "var(--neon-red)" : "var(--neon-yellow)";
-            msg.style.color = "#888";
-            msg.innerText = (score === 0) ? "Nessuna corrispondenza nei database." : "Dati parziali... calcolo probabilità in corso.";
+            fill.style.backgroundColor = "var(--neon-yellow)";
+            msg.innerText = "Massa critica quasi raggiunta...";
         }
     }
-
+}
     // Script per il secondo box di validazione
     document.getElementById('checkBtn').onclick = function() {
         var p = document.getElementById('passInput').value.toUpperCase().trim();
