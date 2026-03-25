@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Simulation - Vulnerability Test</title>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --neon-red: #ff1744;
+            --neon-yellow: #ffeb3b;
+            --bg-black: #0a0a0b;
+            --panel-bg: #16161a;
+        }
+
+        body { 
+            background: var(--bg-black); 
+            color: #ffffff; 
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 0; padding: 40px 10px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .container { width: 100%; max-width: 1000px; }
+
+        header, .enigma-header { 
+            margin-bottom: 30px; 
+            line-height: 1.6; 
+            text-align: justify; 
+            color: #ccc; 
+            padding: 0 15px;
+        }
+
+        .osint-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            display: block;
+        }
+
+        h2 { color: var(--neon-green); text-transform: uppercase; letter-spacing: 2px; padding-left: 15px; }
+
+        /* App 1: Bruteforce Terminal */
+        .cracker-box {
+            background: var(--panel-bg); 
+            padding: 30px; 
+            border-radius: 4px; 
+            border: 2px solid var(--neon-green);
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .cracker-box input {
+            background: #000; border: 1px solid var(--neon-green); color: #fff;
+            padding: 15px; width: 85%; font-size: 1.1rem; text-align: center;
+            margin-bottom: 20px; outline: none; font-family: inherit;
+        }
+
+        .btn-crack {
+            width: 90%; padding: 15px; background: var(--neon-green); color: #000;
+            border: none; font-weight: bold; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s; margin-bottom: 25px;
+        }
+
+        .meter-container { 
+            width: 100%; background: #222; height: 35px; border-radius: 2px; 
+            border: 1px solid #444; overflow: hidden; margin-bottom: 15px;
+        }
+
+        #meter-fill { width: 0%; height: 100%; background: var(--neon-red); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        #secret-reveal {
+            display: none; border: 2px dashed var(--neon-green); padding: 20px;
+            margin-top: 20px; background: rgba(0, 255, 65, 0.05);
+            animation: flash 1.5s infinite;
+        }
+
+        /* App 2: Auth Box */
+        .auth-box {
+            border: 1px solid #333; padding: 30px; border-radius: 8px;
+            text-align: center; background: var(--panel-bg); margin-top: 60px;
+        }
+
+        .auth-box input {
+            background: #000; border: 1px solid var(--neon-green); color: var(--neon-green);
+            padding: 15px; width: 80%; text-align: center; margin: 15px 0; font-size: 1.2rem;
+        }
+
+        .btn-auth {
+            background: var(--neon-green); color: #000; border: none;
+            padding: 15px 30px; width: 85%; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
+
+        #link-area { display: none; margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
+        .btn-link { color: #000; background: var(--neon-green); text-decoration: none; padding: 15px; display: block; font-weight: bold; }
+
+        @keyframes flash { 50% { border-color: transparent; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        Le difese tecniche a volte sono solo un guscio sottile. Se non puoi sfondare la porta blindata di un server, cerchi chi ha le chiavi e studi le sue abitudini. Luca Fabbri è convinto di essere al sicuro, ma ha commesso l'errore più comune: ha intrecciato la sua vita digitale con i suoi affetti più cari.<br><br>
+        Le foto analizzate in precedenza non erano solo immagini, ma tessere di un mosaico.... Ogni hashtag, ogni numero, ogni nome è una potenziale crepa nella sua armatura. Un malintenzionato non ha bisogno di un supercomputer; gli basta un terminale di Bruteforce e i dati giusti per far crollare il castello di carte di Luca.
+    </header>
+
+    <div class="enigma-header">
+        <h2>L'Enigma:</h2>
+        <ul>
+            <li><strong>SIMULAZIONE ATTACCO:</strong> Utilizza il terminale sottostante per testare la vulnerabilità dell'account di Luca.</li>
+            <li>Inserisci i <strong>Tag OSINT</strong> (nomi, date, riferimenti simbolici) che hai individuato nelle foto della sua stanza e del suo profilo social.</li>
+            <li>Più dati corretti inserirai, più la barra di vulnerabilità salirà. Se raggiungerai una massa critica di informazioni, il sistema cederà, rivelandoti la password per accedere ai Log di sistema.</li>
+        </ul>
+    </div>
+    <img src="LINK_IMMAGINE_GATTO.jpg" class="osint-image" alt="Evidence 01">
+    <img src="LINK_IMMAGINE_MIRROR_SELFIE.jpg" class="osint-image" alt="Evidence 02">
+
+    <div class="cracker-box">
+        <div style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 20px; color: #888;">BRUTEFORCE TERMINAL v3.0</div>
+        
+        <input type="text" id="crackInput" placeholder="INSERISCI TAG OSINT..." autocomplete="off">
+        <button class="btn-crack" onclick="startCracking()">Avvia Decriptazione</button>
+        
+        <div id="prob-text" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">VULNERABILITÀ: 0%</div>
+        
+        <div class="meter-container">
+            <div id="meter-fill"></div>
+        </div>
+
+        <div id="statusMsg" style="font-size: 0.8rem; color: #666; margin-top: 10px;">Inserire i dati raccolti per procedere.</div>
+
+        <div id="secret-reveal">
+            <span style="color: var(--neon-green); font-weight: bold;">SISTEMA VIOLATO!</span><br>
+            ACCESSO AI LOG: <strong style="font-size: 1.5rem; color: #fff; background: #222; padding: 0 5px;">RIFLESSO-24</strong>
+        </div>
+    </div>
+
+    <div class="auth-box">
+        <h3 style="font-size: 0.9rem; letter-spacing: 1px;">INSERIRE CODICE AUTORIZZAZIONE</h3>
+        <input type="text" id="passInput" placeholder="CODICE...">
+        <button id="checkBtn" class="btn-auth">VERIFICA CODICE</button>
+
+        <div id="link-area">
+            <p style="color: var(--neon-green); font-weight: bold; margin-bottom: 15px;">ACCESSO AI LOG DI SISTEMA AUTORIZZATO</p>
+            <a href="https://sites.google.com/cnos-fap.it/sicurezza-digitale/g87g77-4" target="_blank" class="btn-link">VAI AL CASO 004 →</a>
+        </div>
+    </div>
+</div>
+<script>
+    function startCracking() {
+        var inputVal = document.getElementById('crackInput').value.toLowerCase().trim();
+        var fill = document.getElementById('meter-fill');
+        var text = document.getElementById('prob-text');
+        var msg = document.getElementById('statusMsg');
+        var reveal = document.getElementById('secret-reveal');
+        
+        var score = 0;
+
+        // Logica di verifica pesata
+        if (inputVal.indexOf("birba") !== -1) score += 20;
+        if (inputVal.indexOf("virtus") !== -1) score += 20;
+        if (inputVal.indexOf("#") !== -1) score += 15;
+        if (/\b2007\b/.test(inputVal)) score += 30; 
+        if (/\b1403\b/.test(inputVal)) score += 20; 
+        if (/\b07\b/.test(inputVal)) score += 15;
+        
+        if (score > 100) score = 100;
+
+        // Aggiornamento interfaccia
+        fill.style.width = score + "%";
+        text.innerText = "VULNERABILITÀ: " + score + "%";
+
+        if (score >= 65) {
+            fill.style.backgroundColor = "var(--neon-green)";
+            msg.innerText = "CRACKING COMPLETATO: MATCH TROVATO!";
+            reveal.style.display = "block";
+            msg.style.color = "var(--neon-green)";
+        } else {
+            reveal.style.display = "none";
+            fill.style.backgroundColor = (score < 45) ? "var(--neon-red)" : "var(--neon-yellow)";
+            msg.style.color = "#888";
+            msg.innerText = (score === 0) ? "Nessuna corrispondenza nei database." : "Dati parziali... calcolo probabilità in corso.";
+        }
+    }
+
+    // Script per il secondo box di validazione
+    document.getElementById('checkBtn').onclick = function() {
+        var p = document.getElementById('passInput').value.toUpperCase().trim();
+        var area = document.getElementById('link-area');
+        
+        if (p === "RIFLESSO-24") {
+            area.style.display = "block";
+            this.style.display = "none";
+            document.getElementById('passInput').disabled = true;
+            document.getElementById('passInput').style.borderColor = "#444";
+        } else {
+            alert("ACCESSO NEGATO: Credenziali non riconosciute.");
+        }
+    };
+</script>
+</body>
+</html>
