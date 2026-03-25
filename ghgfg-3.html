@@ -148,7 +148,7 @@
         <div style="font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 20px; color: #888;">BRUTEFORCE TERMINAL v3.0</div>
         
         <input type="text" id="crackInput" placeholder="INSERISCI TAG OSINT..." autocomplete="off">
-        <button class="btn-crack" onclick="startCracking()">Avvia Decriptazione</button>
+        <button class="btn-crack" onclick="()">Avvia Decriptazione</button>
         
         <div id="prob-text" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">VULNERABILITÀ: 0%</div>
         
@@ -240,32 +240,6 @@ function finishScan(score) {
     }
 }
 
-    // 4. Aggiornamento Visivo
-    fill.style.width = score + "%";
-    text.innerText = "VULNERABILITÀ: " + score + "%";
-
-    // 5. Gestione Stati (Colori e Messaggi)
-    if (score >= 65) {
-        fill.style.backgroundColor = "var(--neon-green)";
-        msg.innerText = "SISTEMA VIOLATO: Corrispondenza trovata!";
-        msg.style.color = "var(--neon-green)";
-        reveal.style.display = "block";
-    } else {
-        reveal.style.display = "none";
-        msg.style.color = "#888";
-        
-        if (score === 0) {
-            fill.style.backgroundColor = "var(--neon-red)";
-            msg.innerText = "Nessun dato utile rilevato.";
-        } else if (score < 45) {
-            fill.style.backgroundColor = "var(--neon-red)";
-            msg.innerText = "Dati insufficienti...";
-        } else {
-            fill.style.backgroundColor = "var(--neon-yellow)";
-            msg.innerText = "Massa critica quasi raggiunta...";
-        }
-    }
-}
     // Script per il secondo box di validazione
     document.getElementById('checkBtn').onclick = function() {
         var p = document.getElementById('passInput').value.toUpperCase().trim();
