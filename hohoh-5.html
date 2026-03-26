@@ -78,7 +78,7 @@
         <div class="t-step">STEP 4 DI 5</div>
         <div class="t-title">> TIMELINE DATABASE</div>
         <div class="t-desc">A che ora è avvenuto l'accesso al database? (HH:MM)</div>
-        <input type="text" id="i4" placeholder="es. 23:08 o 2308" autocomplete="off">
+        <input type="text" id="i4" placeholder="es. 15:39 o 1539" autocomplete="off">
         <div id="e4" class="err">ACCESSO NEGATO - DATO ERRATO</div>
         <button class="btn-verify" onclick="checkTimeStep()">Verifica Nodo</button>
     </div>
@@ -120,10 +120,10 @@ function checkTimeStep() {
     var input = document.getElementById('i4').value.trim();
     var error = document.getElementById('e4');
     
-    // Rimuove tutto ciò che non è un numero (quindi accetta 23:08, 23 08, 23.08, 2308)
+    // Rimuove tutto ciò che non è un numero (quindi accetta 23:10, 23 10, 23.10, 2310)
     var cleanedInput = input.replace(/\D/g, "");
     
-    if (cleanedInput === "2308") {
+    if (cleanedInput === "2310") {
         advanceStep(4);
     } else {
         showError(error);
