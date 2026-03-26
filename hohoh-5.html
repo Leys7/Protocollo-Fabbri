@@ -1,0 +1,173 @@
+<style>
+    body { background-color: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 800px; margin: auto; }
+    
+    /* Box Briefing */
+    .briefing { 
+        background: rgba(255, 23, 68, 0.05); 
+        border-left: 4px solid #ff1744; 
+        padding: 20px; margin-bottom: 30px; 
+    }
+    
+    .enigma-box { margin: 40px 0; border-top: 1px solid #333; padding-top: 20px; }
+    h2 { color: #ff1744; text-transform: uppercase; }
+    
+    /* App Terminal */
+    #term-safe { background:#050505; color:#00ff41; padding:25px; border:2px solid #00ff41; border-radius: 5px; box-shadow: 0 0 20px rgba(0,255,65,0.2); }
+    .step { display: none; }
+    .active { display: block; }
+    .t-step { color:#888; font-size:11px; margin-bottom:5px; letter-spacing: 2px; }
+    .t-title { color:#ff1744; font-weight:bold; font-size:18px; text-transform:uppercase; margin-bottom: 15px; }
+    .t-desc { font-size:15px; color:#fff; margin:15px 0; }
+    
+    input { background:#000; border:1px solid #444; color:#00ff41; padding:15px; width:100%; box-sizing:border-box; font-size:18px; outline:none; border-radius: 3px; }
+    input:focus { border-color: #00ff41; }
+    
+    .btn-verify { background:#ff1744; color:#fff; border:none; padding:18px; width:100%; font-weight:bold; cursor:pointer; margin-top:20px; text-transform:uppercase; font-size: 16px; transition: 0.3s; }
+    .btn-verify:hover { background: #d50000; }
+    
+    .err { color:#ff1744; font-size:13px; margin-top:15px; border:1px solid #ff1744; padding:10px; text-align:center; display:none; font-weight: bold; }
+    
+    #final { display:none; text-align:center; padding:20px; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0.7; } }
+</style>
+
+<div class="container">
+    <div class="briefing">
+        <p>Il server della scuola sta entrando in modalità di protezione automatica. Se non confermiamo i dati dell'indagine ora, i log verranno sovrascritti e l'accusa contro Luca diventerà definitiva. Il vero colpevole ha giocato d'anticipo, ma ha sottovalutato la tua capacità di analisi.</p>
+        <p>Davanti a te lampeggia il <strong>protocollo Kill Switch</strong>. È l'ultima barriera. Per disarmare l'attacco e ripulire il nome di Luca, devi rispondere correttamente a una sequenza di validazione. Ogni risposta sbagliata è un secondo perso. Hai analizzato la mail, la stanza, le foto social e i log del server: tutto ciò che ti serve è già nella tua testa. Digita i dati, sblocca i nodi e ferma questa catena prima che sia troppo tardi.</p>
+    </div>
+
+    <div class="enigma-box">
+        <h2>L'Enigma:</h2>
+        <ul>
+            <li><strong>PROTOCOLLO DI VALIDAZIONE:</strong> Supera i 5 step di sicurezza del terminale.</li>
+            <li>Ti verranno chiesti dettagli cruciali raccolti durante l'intera indagine: dal mittente della mail di phishing alle abitudini private di Luca, fino all'identità che si nasconde dietro l'IP sospetto.</li>
+            <li>Se riuscirai a completare la sequenza senza errori, attiverai il <strong>Kill Switch</strong> e otterrai il codice finale per chiudere il caso.</li>
+        </ul>
+    </div>
+    <div id="term-safe">
+    <div id="s1" class="step active">
+        <div class="t-step">STEP 1 DI 5</div>
+        <div class="t-title">> ANALISI PHISHING</div>
+        <div class="t-desc">Chi è il mittente simulato nella email di phishing? (Dominio)</div>
+        <input type="text" id="i1" placeholder="esempio.it..." autocomplete="off">
+        <div id="e1" class="err">ACCESSO NEGATO - DATO ERRATO</div>
+        <button class="btn-verify" onclick="check(1, 'poste.it')">Verifica Nodo</button>
+    </div>
+
+    <div id="s2" class="step">
+        <div class="t-step">STEP 2 DI 5</div>
+        <div class="t-title">> INVESTIGAZIONE OSINT</div>
+        <div class="t-desc">In quale via abita il sospettato?</div>
+        <input type="text" id="i2" placeholder="via..." autocomplete="off">
+        <div id="e2" class="err">ACCESSO NEGATO - DATO ERRATO</div>
+        <button class="btn-verify" onclick="check(2, 'via roma')">Verifica Nodo</button>
+    </div>
+
+    <div id="s3" class="step">
+        <div class="t-step">STEP 3 DI 5</div>
+        <div class="t-title">> DATI ANAGRAFICI</div>
+        <div class="t-desc">In che mese è nato il sospettato?</div>
+        <input type="text" id="i3" placeholder="mese..." autocomplete="off">
+        <div id="e3" class="err">ACCESSO NEGATO - DATO ERRATO</div>
+        <button class="btn-verify" onclick="check(3, 'marzo')">Verifica Nodo</button>
+    </div>
+
+    <div id="s4" class="step">
+        <div class="t-step">STEP 4 DI 5</div>
+        <div class="t-title">> TIMELINE DATABASE</div>
+        <div class="t-desc">A che ora è avvenuto l'accesso al database? (HH:MM)</div>
+        <input type="text" id="i4" placeholder="es. 23:08 o 2308" autocomplete="off">
+        <div id="e4" class="err">ACCESSO NEGATO - DATO ERRATO</div>
+        <button class="btn-verify" onclick="checkTimeStep()">Verifica Nodo</button>
+    </div>
+
+    <div id="s5" class="step">
+        <div class="t-step">STEP 5 DI 5</div>
+        <div class="t-title">> IDENTIFICAZIONE</div>
+        <div class="t-desc">Qual è il cognome del vero colpevole?</div>
+        <input type="text" id="i5" placeholder="cognome..." autocomplete="off">
+        <div id="e5" class="err">ACCESSO NEGATO - DATO ERRATO</div>
+        <button class="btn-verify" onclick="check(5, 'bianchi')">Verifica Nodo</button>
+    </div>
+
+    <div id="final">
+        <h2 style="color:#00ff41; margin-top: 0;">🛡️ KILL SWITCH ATTIVATO</h2>
+        <div style="border:2px dashed #00ff41; padding:20px; margin:20px 0; background: rgba(0,255,65,0.05);">
+            <span style="font-size:12px; color:#888; text-transform: uppercase; letter-spacing: 2px;">PASSWORD DI DECRIPTAZIONE FINALE:</span><br>
+            <strong style="font-size:32px; letter-spacing:5px; color: #fff;">CATENA-OFF</strong>
+        </div>
+        <p style="color: #888; font-size: 13px;">Inserisci questo codice nel modulo di autorizzazione sottostante.</p>
+    </div>
+</div>
+
+<script>
+// Funzione generica per i testi
+function check(step, correct) {
+    var input = document.getElementById('i' + step).value.toLowerCase().trim();
+    var error = document.getElementById('e' + step);
+    
+    if (input === correct) {
+        advanceStep(step);
+    } else {
+        showError(error);
+    }
+}
+
+// Funzione specifica per l'orario (Flessibile)
+function checkTimeStep() {
+    var input = document.getElementById('i4').value.trim();
+    var error = document.getElementById('e4');
+    
+    // Rimuove tutto ciò che non è un numero (quindi accetta 23:08, 23 08, 23.08, 2308)
+    var cleanedInput = input.replace(/\D/g, "");
+    
+    if (cleanedInput === "2308") {
+        advanceStep(4);
+    } else {
+        showError(error);
+    }
+}
+
+function advanceStep(currentStep) {
+    document.getElementById('s' + currentStep).classList.remove('active');
+    var next = currentStep + 1;
+    if (next <= 5) {
+        document.getElementById('s' + next).classList.add('active');
+    } else {
+        document.getElementById('final').style.display = 'block';
+    }
+}
+
+function showError(errorElement) {
+    errorElement.style.display = 'block';
+    setTimeout(function(){ errorElement.style.display = 'none'; }, 2500);
+}
+</script>
+<div style="margin-top: 60px; border: 2px solid #333; padding: 30px; border-radius: 10px; background: #16161a; text-align: center;">
+    <h3 style="margin-top: 0; color: #00ff41; letter-spacing: 1px;">MODULO AUTORIZZAZIONE LIVELLO 006</h3>
+    <input type="text" id="passInput" placeholder="INSERIRE CODICE KILL SWITCH..." style="text-align: center; width: 80%; border-color: #00ff41; margin-bottom: 20px;">
+    <br>
+    <button id="checkBtn" style="background: #00ff41; color: #000; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 85%; text-transform: uppercase;">VERIFICA CODICE</button>
+
+    <div id="link-area" style="display:none; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+        <p style="color: #00ff41; font-weight: bold; font-size: 18px;">ACCESSO AUTORIZZATO: FILE RIPRISTINATI</p>
+        <a href="https://sites.google.com/cnos-fap.it/sicurezza-digitale/hj90-6" target="_blank" style="color: #000; background: #00ff41; text-decoration: none; padding: 20px; display: block; font-weight: bold; border-radius: 5px;">VAI AL CASO 006 (EPILOGO) →</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('checkBtn').onclick = function() {
+        var p = document.getElementById('passInput').value.toUpperCase().trim();
+        var area = document.getElementById('link-area');
+        
+        if (p === "CATENA-OFF") {
+            area.style.display = "block";
+            this.style.display = "none";
+            document.getElementById('passInput').disabled = true;
+        } else {
+            alert("ACCESSO NEGATO: Codice di validazione errato.");
+        }
+    };
+</script>
