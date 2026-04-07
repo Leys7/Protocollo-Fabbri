@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epilogo - Protocollo Cassandra</title>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --neon-red: #ff1744;
+            --bg-dark: #050505;
+            --panel-bg: #0a0a0a;
+        }
+
+        body { 
+            background: var(--bg-dark); 
+            color: #ffffff; 
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 0; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+
+        header { margin-bottom: 40px; line-height: 1.6; text-align: justify; color: #ccc; }
+        h2 { color: var(--neon-green); text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Game Container */
+        #game-container { 
+            background: var(--panel-bg); 
+            color: var(--neon-green); 
+            padding: 30px; 
+            border: 2px solid var(--neon-green); 
+            min-height: 600px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .instruction { 
+            font-size: 12px; color: #888; 
+            margin-bottom: 30px; text-align: center; 
+            border-bottom: 1px solid #222; padding-bottom: 15px; 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* Password Tags */
+        #source-zone { 
+            display: flex; flex-wrap: wrap; gap: 15px; 
+            margin-bottom: 40px; justify-content: center; 
+        }
+
+        .password-tag { 
+            background: #111; border: 1px solid var(--neon-red); 
+            color: #fff; padding: 12px 20px; cursor: pointer; 
+            font-weight: bold; border-radius: 4px; transition: 0.3s; 
+        }
+
+        .password-tag.selected { 
+            background: var(--neon-red); 
+            box-shadow: 0 0 20px var(--neon-red); 
+            transform: scale(1.05); 
+        }
+
+        .password-tag.hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+
+        /* Lore Rows */
+        .lore-row { 
+            display: flex; align-items: center; 
+            margin-bottom: 15px; background: #000; 
+            border: 1px solid #333; padding: 15px; 
+            border-radius: 5px; cursor: pointer; transition: 0.2s;
+        }
+
+        .lore-row:hover { border-color: #555; }
+
+        .slot { 
+            width: 140px; height: 45px; 
+            border: 1px dashed #444; 
+            display: flex; align-items: center; justify-content: center; 
+            margin-right: 20px; font-size: 11px; color: #555; flex-shrink: 0; 
+            text-transform: uppercase;
+        }
+
+        .text-container { flex: 1; }
+        .cryptic { font-size: 14px; color: #aaa; font-style: italic; }
+        .original { font-size: 14px; color: var(--neon-green); display: none; font-weight: bold; }
+
+        /* Decrypted State */
+        .decrypted { background: rgba(0, 255, 65, 0.05); border-color: var(--neon-green) !important; }
+        .decrypted .cryptic { display: none; }
+        .decrypted .original { display: block; }
+        .decrypted .slot { border-style: solid; border-color: var(--neon-green); color: var(--neon-green); font-weight: bold; }
+
+        #final-msg { 
+            display: none; text-align: center; 
+            margin-top: 40px; padding: 25px; 
+            border: 3px double var(--neon-green); 
+            background: rgba(0, 255, 65, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <p>Il silenzio torna a regnare nei corridoi del Liceo Mazzini, ma è un silenzio diverso. Il nome di Luca Fabbri è stato ripulito, le prove contro Andrea Bianchi sono ora sul tavolo della presidenza, e il malware è stato isolato. Ma mentre guardi le stringhe di codice scorrere un'ultima volta, capisci che questa storia non riguardava solo un falso phishing.</p>
+        <p>Le password che hai faticosamente recuperato — <strong>Traccia, Riflesso, Memoria</strong> — non erano semplici chiavi d'accesso. Erano i pezzi di un avvertimento. Ogni tuo clic lascia un'impronta, ogni tuo post è uno specchio in cui altri possono guardare, e la rete non dimentica mai, nemmeno quando vorresti essere perdonato. Per chiudere definitivamente il dossier e stabilire una connessione sicura con la verità, devi ricomporre l'ultimo mosaico. Abbina ogni codice al suo vero significato e spezza la catena prima che diventi una prigione.</p>
+    </header>
+
+    <h2>L'Enigma:</h2>
+    <p><strong>DECRIPTAZIONE FILOSOFICA:</strong> Utilizza il terminale "Protocollo Cassandra" per abbinare le 5 password raccolte alle loro definizioni criptiche. Solo al completamento del mosaico la missione sarà conclusa.</p>
+
+    <div id="game-container">
+        <div class="instruction">IDENTIFICAZIONE FINALE: CLICCA UNA PASSWORD E POI IL SUO SIGNIFICATO</div>
+        
+        <div id="source-zone">
+            <div class="password-tag" onclick="selectPass(this)">RIFLESSO-24</div>
+            <div class="password-tag" onclick="selectPass(this)">SILENZIO-1991</div>
+            <div class="password-tag" onclick="selectPass(this)">CATENA-OFF</div>
+            <div class="password-tag" onclick="selectPass(this)">MEMORIA-INF</div>
+            <div class="password-tag" onclick="selectPass(this)">TRACCIA-00</div>
+        </div>
+
+        <div id="target-zone">
+            <div class="lore-row" data-ans="SILENZIO-1991" onclick="matchLore(this)">
+                <div class="slot">Seleziona...</div>
+                <div class="text-container">
+                    <div class="cryptic">"L'anno in cui il primo server aprì le porte di un mondo virtuale ancora privo di rumore."</div>
+                    <div class="original">"Tutto è iniziato col silenzio." (Nascita del World Wide Web).</div>
+                </div>
+            </div>
+            <div class="lore-row" data-ans="TRACCIA-00" onclick="matchLore(this)">
+                <div class="slot">Seleziona...</div>
+                <div class="text-container">
+                    <div class="cryptic">"L'alba del nuovo millennio: quando abbiamo iniziato a nutrire la rete con i nostri dati personali."</div>
+                    <div class="original">"Ogni clic è una traccia che non muore mai." (Inizio dell'era social).</div>
+                </div>
+            </div>
+            <div class="lore-row" data-ans="RIFLESSO-24" onclick="matchLore(this)">
+                <div class="slot">Seleziona...</div>
+                <div class="text-container">
+                    <div class="cryptic">"Un'illusione catturata in pixel, dove l'immagine digitale maschera la fragilità della realtà."</div>
+                    <div class="original">"Il profilo online è solo un riflesso deformato." (Ossessione per l'immagine).</div>
+                </div>
+            </div>
+            <div class="lore-row" data-ans="MEMORIA-INF" onclick="matchLore(this)">
+                <div class="slot">Seleziona...</div>
+                <div class="text-container">
+                    <div class="cryptic">"Un archivio eterno che non conosce l'oblio; un errore di oggi riecheggia nel tempo."</div>
+                    <div class="original">"La rete ha memoria infinita, ma non ha perdono."</div>
+                </div>
+            </div>
+            <div class="lore-row" data-ans="CATENA-OFF" onclick="matchLore(this)">
+                <div class="slot">Seleziona...</div>
+                <div class="text-container">
+                    <div class="cryptic">"L'ultimo comando: riprendere il controllo prima che l'ingranaggio diventi prigione."</div>
+                    <div class="original">"Spezza la catena finché sei in tempo."</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="final-msg">
+            <h2 style="color:var(--neon-green); margin-top:0;">PROTOCOLLO CASSANDRA DECRIPTATO</h2>
+            <p style="color:#fff; font-size: 18px;">CONVERSIONE REALTÀ COMPLETATA. MISSIONE CONCLUSA. 🛡️🔓</p>
+            <p style="color:#888; font-size: 12px;">Puoi chiudere il terminale. La rete ricorda, tu agisci con consapevolezza.</p>
+        </div>
+    </div>
+</div>
+<script>
+    let selectedElement = null;
+    let matches = 0;
+
+    // Shuffle dei bottoni password all'avvio per aumentare la sfida
+    window.onload = function() {
+        const zone = document.getElementById('source-zone');
+        for (let i = zone.children.length; i >= 0; i--) {
+            zone.appendChild(zone.children[Math.random() * i | 0]);
+        }
+    };
+
+    function selectPass(el) {
+        // Rimuove selezione precedente
+        document.querySelectorAll('.password-tag').forEach(t => t.classList.remove('selected'));
+        // Seleziona nuovo elemento
+        selectedElement = el;
+        el.classList.add('selected');
+    }
+
+    function matchLore(row) {
+        // Verifica se c'è una selezione e se la riga non è già stata decriptata
+        if (!selectedElement || row.classList.contains('decrypted')) return;
+
+        // Controllo corrispondenza testo selezionato vs data-attribute della riga
+        if (selectedElement.innerText === row.getAttribute('data-ans')) {
+            // Successo
+            row.classList.add('decrypted');
+            row.querySelector('.slot').innerText = selectedElement.innerText;
+            selectedElement.classList.add('hidden');
+            selectedElement = null;
+            matches++;
+            
+            // Verifica fine gioco
+            if (matches === 5) {
+                setTimeout(() => {
+                    document.getElementById('final-msg').style.display = 'block';
+                    document.getElementById('source-zone').style.display = 'none';
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 500);
+            }
+        } else {
+            // Errore visivo temporaneo (Rosso)
+            row.style.borderColor = 'var(--neon-red)';
+            row.style.background = 'rgba(255, 23, 68, 0.1)';
+            setTimeout(() => { 
+                if(!row.classList.contains('decrypted')) {
+                    row.style.borderColor = '#333'; 
+                    row.style.background = '#000';
+                }
+            }, 600);
+        }
+    }
+</script>
+</body>
+</html>
