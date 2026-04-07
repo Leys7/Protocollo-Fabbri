@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: #1a0f0f; color: #ff5555; font-family: monospace; padding: 40px 20px; text-align: center; }
+        .container { max-width: 700px; margin: auto; border: 1px solid #ff1744; padding: 30px; background: #000; }
+        h1 { text-transform: uppercase; letter-spacing: 3px; }
+        .alibi-box { margin: 20px 0; padding: 20px; background: #111; border: 1px dashed #444; color: #eee; text-align: justify; }
+        
+        /* Gioco della Pressione */
+        #stress-test { margin-top: 30px; }
+        .bar-container { width: 100%; background: #222; height: 20px; border: 1px solid #ff1744; margin: 15px 0; }
+        #stress-fill { width: 0%; height: 100%; background: #ff1744; transition: width 0.3s; }
+        
+        button { background: #ff1744; color: #000; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        button:hover { background: #ff5555; }
+        
+        #revelation { display: none; margin-top: 30px; animation: fadeIn 1s; }
+        .btn-return { background: #fff; color: #000; text-decoration: none; padding: 15px 25px; display: inline-block; margin-top: 20px; font-weight: bold; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚠️ ACCUSA FORMALE: LUCA FABBRI</h1>
+    <div class="alibi-box">
+        "Non sono stato io! Ero a casa, stavo dormendo... controllate il mio computer!" <br><br>
+        Hai i log con il suo nome, ma Luca non cede. Per chiudere il verbale devi forzare la sua resistenza psicologica e confermare la sua colpevolezza.
+    </div>
+
+    <div id="stress-test">
+        <p>PREMI RIPETUTAMENTE PER CONFERMARE L'INTERROGATORIO</p>
+        <div class="bar-container">
+            <div id="stress-fill"></div>
+        </div>
+        <button onclick="increaseStress()">PRESSIONE INVESTIGATIVA</button>
+    </div>
+
+    <div id="revelation">
+        <h2 style="color: #fff;">❌ ERRORE DI ANALISI RILEVATO</h2>
+        <p style="color: #ff5555; font-size: 1.2rem;">
+            Mentre forzi la mano, arriva un report tecnico: <br>
+            <strong>"L'account di Fabbri è stato usato da un iPhone 15."</strong>
+        </p>
+        <p style="color: #bbb;">
+            Ma Luca Fabbri possiede un vecchio Android rotto trovato nella sua stanza. <br>
+            Hai appena accusato la persona sbagliata basandoti solo sul nome utente, ignorando l'IP sorgente e il dispositivo. 
+        </p>
+        <p style="font-weight: bold;">L'INDAGINE È COMPROMESSA.</p>
+        
+        <a href="URL_PAGINA_LOG_PRECEDENTE" class="btn-return">TORNA AI LOG E TROVA IL VERO COLPEVOLE</a>
+    </div>
+</div>
+
+<script>
+    let stress = 0;
+    function increaseStress() {
+        if (stress < 100) {
+            stress += 10;
+            document.getElementById('stress-fill').style.width = stress + "%";
+            if (stress >= 100) {
+                document.getElementById('stress-test').style.display = "none";
+                document.getElementById('revelation').style.display = "block";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
